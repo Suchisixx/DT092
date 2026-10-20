@@ -1,0 +1,8 @@
+{
+  "n": 1017,
+  "seed_inherited_from_dataset": 20261016,
+  "semopy_version": "2.3.11",
+  "data_file": "D:\\Download\\DT092_Phishing_Culture\\data\\simulated\\synthetic_sem.csv",
+  "interaction_definition": "(COMM_mean - mean(COMM_mean)) * (TOOL - mean(TOOL))",
+  "note": "Synthetic data. Observed composite interaction proxy; not a full latent interaction estimator."
+}

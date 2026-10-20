@@ -1,0 +1,18 @@
+{
+  "experiment_id": "E02",
+  "model_name": "paper_aligned_sem",
+  "data_file": "D:\\Download\\DT092_Phishing_Culture\\data\\simulated\\synthetic_sem.csv",
+  "data_sha256": "2cae044842247f21563e4c73abf63f8b26be6b4499dcea4160f61249e714c6bb",
+  "n_rows": 1017,
+  "n_columns": 27,
+  "seed_used_for_data_generation": 20261016,
+  "data_type": "synthetic",
+  "estimator": "semopy default ML",
+  "semopy_version": "2.3.11",
+  "pandas_version": "2.3.1",
+  "python_version": "3.13.2",
+  "fit_status": "Name of objective: MLW\nOptimization method: SLSQP\nOptimization successful.\nOptimization terminated successfully\nObjective value: 0.270\nNumber of iterations: 32\nParams: 0.971 0.973 1.023 1.045 1.049 1.112 1.071 1.091 1.049 1.054 1.055 1.103 1.001 1.000 1.031 1.001 0.990 0.991 0.410 0.452 -0.290 0.111 0.450 0.361 -0.127 0.188 0.076 -0.020 0.376 0.140 0.109 0.223 0.450 0.533 0.605 0.558 0.549 0.696 0.175 0.220 0.624 0.629 0.605 0.568 0.611 0.761 0.780 0.741 0.734 0.557 0.226 0.173 0.202 0.755 0.716 0.759 0.751 0.777 0.150 0.628 0.641 0.568 0.591 1.406 0.484 0.539 0.532 0.624 0.560",
+  "model_syntax": "\n# Measurement model\nNORM  =~ NORM1 + NORM2 + NORM3 + NORM4\nAWARE =~ AWARE1 + AWARE2 + AWARE3 + AWARE4\nKNOW  =~ KNOW1 + KNOW2 + KNOW3 + KNOW4\nCOMM  =~ COMM1 + COMM2 + COMM3 + COMM4\nATT   =~ ATT1 + ATT2 + ATT3 + ATT4\nRESP  =~ RESP1 + RESP2 + RESP3 + RESP4\n\n# Structural model: ATT and RESP\nATT  ~ NORM + AWARE + COMM + KNOW\nRESP ~ NORM + AWARE + COMM + KNOW\n\n# Structural model: REPORT\n# Hai đường dẫn được bổ sung cho E02:\nREPORT ~ NORM + AWARE + COMM + ATT + RESP + TOOL\n",
+  "timestamp_utc": "2026-10-17T16:59:53.708318+00:00",
+  "note": "Structural comparison model; not an exact replication of the original study."
+}

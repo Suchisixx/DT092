@@ -1,0 +1,7 @@
+{
+  "data": "D:\\Download\\DT092_Phishing_Culture\\data\\simulated\\synthetic_sem.csv",
+  "method": "OLS on construct mean scores with HC3 robust SE",
+  "n": 1017,
+  "synthetic_data": true,
+  "interpretation": "Sensitivity analysis only; coefficients are not directly comparable to standardized latent SEM coefficients."
+}
