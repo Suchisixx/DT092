@@ -1,46 +1,50 @@
-# DT092 — Phishing-reporting culture: Giai đoạn 2
+# DT092 — Khung Thực Nghiệm Tái Lập Có Chọn Lọc Cấu Trúc Khảo Sát & SEM Về Văn Hóa An Toàn Thông Tin Và Hành Vi Báo Cáo Phishing - Lần 3
 
-## Mục đích
-Bộ công cụ này tạo dữ liệu **tổng hợp, không phải phản hồi của người thật** (N=1.017) để kiểm thử quy trình chuẩn bị dữ liệu và làm đầu vào cho CFA/SEM với Python + semopy. Dữ liệu công khai được kiểm kê/đối chiếu riêng; không tự động ghép các dòng của dữ liệu công khai với dữ liệu tổng hợp.
+## 1. Giới thiệu & Tài liệu nền
+Dự án xây dựng khung thực nghiệm tái lập có chọn lọc cấu trúc khảo sát (Survey Instrument) và mô hình phương trình cấu trúc (CFA/SEM) dựa trên bài báo Q1:
+> **Petrič, G., & Just, J. N. (2025).** *Information security culture and phishing-reporting model: structural equivalence across Germany, UK, and USA*. Journal of Cybersecurity, 11(1), tyaf011, 1–17. https://doi.org/10.1093/cybsec/tyaf011
 
-Mô hình trong YAML là **giả định mô phỏng ban đầu**, cần đối chiếu với phiếu tái lập Giai đoạn 1 và bài báo gốc trước khi coi là bản tái lập chính xác. Hệ số là tham số sinh dữ liệu, không phải kết quả ước lượng thực nghiệm.
+- **Dữ liệu thực nghiệm**: Bộ dữ liệu `data/simulated/synthetic_sem.csv` ($N = 1.017$ dòng, 27 cột, `seed = 20261016`, SHA-256: `2cae044842247f21563e4c73abf63f8b26be6b4499dcea4160f61249e714c6bb`) là **dữ liệu tổng hợp (synthetic data)** dùng để kiểm chứng toàn diện quy trình chuẩn bị dữ liệu, CFA, SEM (`semopy`), tương tác `COMM × TOOL`, hồi quy độ nhạy `OLS-HC3` (`statsmodels`), độ tin cậy/giá trị thang đo, độ ổn định đa seed và 5-Fold Cross-Validation chống rò rỉ dữ liệu.
 
-## Cài đặt (Windows PowerShell)
-Khuyến nghị Python 3.11:
+---
+
+## 2. Trình tự 11 File Code (`scripts/`) & Chức năng từng File
+
+| Thứ tự | File Code (`scripts/`) | Mục tiêu ngắn gọn | File Log Tiếng Việt (`results/logs/`) | Tập kết quả xuất ra |
+| :---: | :--- | :--- | :--- | :--- |
+| **00** | `00_run_all_pipeline.py` | **Chạy tự động toàn bộ Bước 01 $\rightarrow$ Bước 11** chỉ bằng 1 lệnh duy nhất. | In tổng hợp trên màn hình console | Toàn bộ `artifacts/` & `results/` |
+| **01** | `01_inspect_public_data.py` | Kiểm kê tệp khảo sát công khai trong `data/raw/public/`, tính SHA-256, đếm dòng/cột/tỷ lệ thiếu. | `01_kiem_ke_du_lieu_cong_khai.log` | `results/tables/public_data_inventory.csv` |
+| **02** | `02_generate_synthetic.py` | Sinh dữ liệu mô phỏng $N=1.017$ (`seed=20261016`) theo tham số `config/model_config.yml`. | `02_sinh_du_lieu_mo_phong.log` | `data/simulated/synthetic_sem.csv`<br/>`artifacts/synthetic_manifest.json` |
+| **03** | `03_validate_data.py` | Kiểm tra 7 tiêu chí chất lượng kỹ thuật (cỡ mẫu, ID duy nhất, không trống, miền Likert 1–5, không trùng dòng). | `03_kiem_tra_chat_luong_du_lieu.log` | `results/tables/validation_checks.csv`<br/>`artifacts/validation_summary.json` |
+| **04** | `04_run_baseline_sem.py` | Ước lượng mô hình đo lường **CFA** (6 nhân tố) và mô hình **SEM cơ sở (Baseline)**. | `04_cfa_va_sem_baseline.log` | `artifacts/baseline/cfa_*.csv`<br/>`artifacts/baseline/sem_*.csv` |
+| **05** | `05_run_interaction_sem.py` | Chuẩn hóa tâm `COMM`, `TOOL` và ước lượng **SEM mở rộng có tương tác `COMM × TOOL`** (kiểm định H7b). | `05_sem_tuong_tac_H7b.log` | `artifacts/interaction/H7b_interaction_result.csv`<br/>`interaction_*.csv` |
+| **06** | `06_compare_models.py` | Đối chiếu 14 hệ số đường dẫn giữa SEM Baseline và SEM Interaction ($\Delta\beta$ và kết luận ý nghĩa). | `06_so_sanh_baseline_va_tuong_tac.log` | `artifacts/sensitivity/baseline_vs_interaction.csv` |
+| **07** | `07_sensitivity_hc3.py` | Phân tích độ nhạy bằng **hồi quy OLS với sai số chuẩn vững HC3** trên điểm trung bình thang đo. | `07_phan_tich_do_nhay_ols_hc3.log` | `artifacts/sensitivity/hc3_sensitivity_results.csv` |
+| **08** | `08_run_paper_aligned_sem.py` | Ước lượng mô hình SEM đối chiếu cấu trúc bài báo (E02) và lưu thông tin hội tụ SLSQP. | `08_sem_doi_chieu_bai_bao.log` | `artifacts/paper_aligned/paper_aligned_*.csv` |
+| **09** | `09_reliability_validity.py` | Tính **Cronbach's Alpha, Composite Reliability (CR), AVE** và **Ma trận Fornell-Larcker** đối chiếu Table 3 & 5 của bài báo. | `09_do_tin_cay_va_gia_tri_thang_do.log` | `artifacts/sensitivity/reliability_validity.csv`<br/>`fornell_larcker_matrix.csv` |
+| **10** | `10_repeated_runs_and_cv.py` | Chạy lặp **5 Seeds độc lập**, **Ablation 3 mô hình** (`M1, M2, M3`), **5-Fold CV chống rò rỉ** & **Phân tích lỗi**. | `10_do_on_dinh_5seeds_va_5fold_cv.log` | `artifacts/repeated_runs/*.csv` |
+| **11** | `11_negative_tests_and_benchmark.py` | Chạy **8 kịch bản Negative Tests** (tiêm lỗi dữ liệu) & đo **Thời gian chạy (ms), RAM đỉnh (MB), số vòng lặp hội tụ**. | `11_kiem_thu_loi_va_chi_phi_tinh_toan.log` | `results/tables/negative_tests_report.csv`<br/>`artifacts/runtime_benchmark.csv` |
+
+---
+
+## 3. Hướng dẫn cài đặt và chạy lại từ đầu (Windows PowerShell)
+
 ```powershell
-py -3.11 -m venv .venv
+# 1. Tạo và kích hoạt môi trường ảo
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 pip install -r requirements.txt
-python scripts/02_generate_synthetic.py --config config/model_config.yml
-python scripts/03_validate_data.py --input data/simulated/synthetic_sem.csv
+
+# 2. Chạy toàn bộ 11 bước thực nghiệm chỉ bằng 1 lệnh duy nhất:
+python scripts/00_run_all_pipeline.py
 ```
-Nếu `py -3.11` không có, dùng Python đã cài và ghi phiên bản thực tế vào manifest/log.
 
-## Dữ liệu công khai
-Ứng viên để đánh giá phù hợp: https://zenodo.org/records/7443048 (DOI 10.5281/zenodo.7443048). Đây không mặc định là dataset thay thế trực tiếp cho mô hình. Tải từ trang nguồn, đọc giấy phép và bảng hỏi; lưu nguyên bản vào `data/raw/public/`, không ghi đè. Sau đó:
-```powershell
-python scripts/01_inspect_public_data.py --input data/raw/public
-```
-Script chỉ kiểm kê file, sheet, cột, kiểu dữ liệu, kích thước và tỷ lệ thiếu; không tự suy luận ý nghĩa biến. Hoàn thiện `artifacts/variable_mapping_template.csv` sau khi đọc nội dung từng câu hỏi. Ghi URL/DOI, ngày tải, giấy phép, phiên bản và SHA-256 vào `artifacts/data_manifest.csv`.
+---
 
-## Cấu trúc mô phỏng
-- NORM: chuẩn mực hỗ trợ an toàn thông tin.
-- AWARE: nhận thức chính sách an toàn thông tin.
-- KNOW: kiến thức an toàn thông tin.
-- COMM: chất lượng giao tiếp.
-- ATT: thái độ đối với an toàn thông tin.
-- RESP: ý thức trách nhiệm.
-- TOOL: biến nhị phân giả lập về công cụ báo cáo.
-- REPORT: tần suất báo cáo phishing Likert 1–5.
+## 4. Tài liệu giải thích kết quả & Báo cáo hoàn chỉnh
 
-Mặc định: NORM/AWARE/COMM/KNOW dự báo ATT và RESP; COMM, TOOL, RESP, ATT và tương tác COMMxTOOL dùng trong phương trình REPORT. NORM/AWARE không có đường dẫn trực tiếp đến REPORT trong cấu hình này. Các đường dẫn và item là bản mô phỏng đề xuất, không phải khẳng định số item chính xác của bài báo. Cần chốt lại với phiếu tái lập.
-
-## Kiểm soát chất lượng
-Validator kiểm tra N, ID duy nhất, giá trị Likert 1–5, TOOL 0/1, missingness, cột bắt buộc, phân phối item và checksum. Đạt các kiểm tra kỹ thuật không chứng minh được giá trị cấu trúc hay độ phù hợp SEM.
-
-## Tái lập
-- Seed cố định trong YAML.
-- Lưu YAML cùng CSV, manifest và log.
-- Không sửa CSV đầu ra bằng tay; sửa cấu hình/logic thì lưu phiên bản mới.
-- Dữ liệu tổng hợp dùng để kiểm thử khả năng khôi phục cấu trúc đã sinh, không chứng minh mô hình đúng trong nhân viên thật.
+- **Giải thích chi tiết 6 Tập kết quả & So sánh trực tiếp với bài báo gốc**: Xem tại [`artifacts/README_GIAI_THICH_KET_QUA.md`](artifacts/README_GIAI_THICH_KET_QUA.md).
+- **Danh mục bảng thống kê & 11 file log Tiếng Việt**: Xem tại [`results/README_BANG_VA_LOG.md`](results/README_BANG_VA_LOG.md).
+- **Bảng đối chiếu tổng hợp 15 giả thuyết Paper $\leftrightarrow$ DT092**: Xem tại [`report/paper_to_results_mapping.csv`](report/paper_to_results_mapping.csv).
+- **Báo cáo đề tài hoàn chỉnh (20–30 trang)**: Xem tại [`report/BAO_CAO_DT092_HOAN_CHINH.md`](report/BAO_CAO_DT092_HOAN_CHINH.md).

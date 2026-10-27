@@ -1,7 +1,7 @@
 {
   "data": "D:\\Download\\DT092_Phishing_Culture\\data\\simulated\\synthetic_sem.csv",
-  "method": "OLS on construct mean scores with HC3 robust SE",
+  "method": "OLS trên điểm trung bình thang đo với sai số chuẩn vững HC3 (statsmodels)",
   "n": 1017,
   "synthetic_data": true,
-  "interpretation": "Sensitivity analysis only; coefficients are not directly comparable to standardized latent SEM coefficients."
+  "interpretation": "Phân tích độ nhạy cấp độ điểm trung bình thang đo; hệ số hồi quy chưa chuẩn hóa được dùng để kiểm tra tính nhất quán về dấu và ý nghĩa thống kê so với SEM."
 }

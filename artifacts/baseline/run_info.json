@@ -2,9 +2,9 @@
   "dataset": "D:\\Download\\DT092_Phishing_Culture\\data\\simulated\\synthetic_sem.csv",
   "n_rows": 1017,
   "n_columns": 27,
-  "data_type": "synthetic; not real respondents",
-  "estimator": "semopy default ML",
+  "data_type": "Dữ liệu mô phỏng (synthetic); không phải người trả lời thật",
+  "estimator": "semopy default MLW (Maximum Likelihood Wishart)",
   "cfa_model": "\nNORM =~ NORM1 + NORM2 + NORM3 + NORM4\nAWARE =~ AWARE1 + AWARE2 + AWARE3 + AWARE4\nKNOW =~ KNOW1 + KNOW2 + KNOW3 + KNOW4\nCOMM =~ COMM1 + COMM2 + COMM3 + COMM4\nATT =~ ATT1 + ATT2 + ATT3 + ATT4\nRESP =~ RESP1 + RESP2 + RESP3 + RESP4\n",
   "sem_model": "\nNORM =~ NORM1 + NORM2 + NORM3 + NORM4\nAWARE =~ AWARE1 + AWARE2 + AWARE3 + AWARE4\nKNOW =~ KNOW1 + KNOW2 + KNOW3 + KNOW4\nCOMM =~ COMM1 + COMM2 + COMM3 + COMM4\nATT =~ ATT1 + ATT2 + ATT3 + ATT4\nRESP =~ RESP1 + RESP2 + RESP3 + RESP4\n\nATT ~ NORM + AWARE + COMM + KNOW\nRESP ~ NORM + AWARE + COMM + KNOW\nREPORT ~ NORM + AWARE + COMM + ATT + RESP + TOOL\n",
-  "note": "Exploratory baseline. Verify model paths and estimator against the original paper before claiming replication."
+  "note": "Mô hình SEM cơ sở (Baseline) kiểm định các đường dẫn trực tiếp và gián tiếp chưa có biến tương tác COMM x TOOL."
 }
