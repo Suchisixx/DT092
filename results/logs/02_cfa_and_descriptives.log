@@ -1,0 +1,45 @@
+[2026-10-30 18:08:57] [INFO] ================================================================================
+[2026-10-30 18:08:57] [INFO] START: CFA Measurement Model and Descriptive Statistics (Milestone M2)
+[2026-10-30 18:08:57] [INFO] Repository Root : D:\Download\DT092_Phishing_Culture
+[2026-10-30 18:08:57] [INFO] Input Dataset   : D:\Download\DT092_Phishing_Culture\data\synthetic_multigroup.csv
+[2026-10-30 18:08:57] [INFO] Output Tables   : D:\Download\DT092_Phishing_Culture\results\tables
+[2026-10-30 18:08:57] [INFO] Log File        : D:\Download\DT092_Phishing_Culture\results\logs\02_cfa_and_descriptives.log
+[2026-10-30 18:08:57] [INFO] Execution Time  : 2026-10-30T11:08:57.256656+00:00
+[2026-10-30 18:08:57] [INFO] ================================================================================
+[2026-10-30 18:08:57] [INFO] Loaded dataset successfully: 1017 rows, 28 columns
+[2026-10-30 18:08:57] [INFO] Country subsample counts: {'US': 506, 'DE': 306, 'UK': 205}
+[2026-10-30 18:08:57] [INFO] Generating Table 1 Demographics and Country Summary...
+[2026-10-30 18:08:57] [INFO] Wrote Table 1 Demographics: D:\Download\DT092_Phishing_Culture\results\tables\table1_demographics.csv (8 rows)
+[2026-10-30 18:08:57] [INFO] Wrote Table 1 Country Summary: D:\Download\DT092_Phishing_Culture\results\tables\table1_country_summary.csv (4 rows)
+[2026-10-30 18:08:57] [INFO] Computing composite scale scores for latent constructs...
+[2026-10-30 18:08:57] [INFO] Generating Table 4 Descriptive Statistics...
+[2026-10-30 18:08:57] [INFO] Wrote Table 4 Descriptives: D:\Download\DT092_Phishing_Culture\results\tables\table4_descriptives.csv (32 rows)
+[2026-10-30 18:08:57] [INFO] Generating Table 3 Pearson Correlation Matrices...
+[2026-10-30 18:08:57] [INFO] Wrote Table 3 Correlations: D:\Download\DT092_Phishing_Culture\results\tables\table3_correlations.csv (32 rows)
+[2026-10-30 18:08:57] [INFO] Estimating CFA Measurement Model via semopy (MLW)...
+[2026-10-30 18:08:57] [INFO] Fitting CFA measurement model on pooled dataset (N=1017)...
+[2026-10-30 18:08:57] [INFO] Pooled CFA Fit: chi2=231.3387 (df=237, p=0.5915), CFI=1.0000, TLI=1.0000, RMSEA=0.0000, SRMR=0.0208
+[2026-10-30 18:08:57] [INFO] Construct NORM: alpha=0.8168, CR=0.8173, AVE=0.5284, sqrt(AVE)=0.7269
+[2026-10-30 18:08:57] [INFO] Construct AWARE: alpha=0.8155, CR=0.8169, AVE=0.5276, sqrt(AVE)=0.7264
+[2026-10-30 18:08:57] [INFO] Construct KNOW: alpha=0.7581, CR=0.7583, AVE=0.4397, sqrt(AVE)=0.6631
+[2026-10-30 18:08:57] [INFO] Construct COMM: alpha=0.7883, CR=0.7885, AVE=0.4824, sqrt(AVE)=0.6945
+[2026-10-30 18:08:57] [INFO] Construct ATT: alpha=0.8559, CR=0.8561, AVE=0.5979, sqrt(AVE)=0.7733
+[2026-10-30 18:08:57] [INFO] Construct RESP: alpha=0.8473, CR=0.8475, AVE=0.5818, sqrt(AVE)=0.7628
+[2026-10-30 18:08:57] [INFO] Wrote Table 2 CFA Measurement: D:\Download\DT092_Phishing_Culture\results\tables\table2_cfa_measurement.csv (24 rows)
+[2026-10-30 18:08:57] [INFO] Wrote Table 2 CFA Fit Indices: D:\Download\DT092_Phishing_Culture\results\tables\table2_cfa_fit_indices.csv (4 rows)
+[2026-10-30 18:08:57] [INFO] Running post-execution self-verification checks...
+[2026-10-30 18:08:57] [INFO]   [PASS] Table 1 country counts sum to pooled counts for all rows.
+[2026-10-30 18:08:57] [INFO]   [PASS] Table 2 factor loadings, p-values, Alpha, CR, and AVE meet all thresholds.
+[2026-10-30 18:08:57] [INFO]   [PASS] Table 3 correlations symmetric, bounded, diagonal 1.0, and positive definite.
+[2026-10-30 18:08:57] [INFO]   [PASS] Table 4 descriptives valid, means within range, SDs positive, skew/kurtosis finite.
+[2026-10-30 18:08:57] [INFO]   [PASS] Fornell-Larcker discriminant validity 100% satisfied across all pairs.
+[2026-10-30 18:08:57] [INFO] ================================================================================
+[2026-10-30 18:08:57] [INFO] [SUCCESS] Milestone M2 CFA and Descriptives pipeline completed successfully.
+[2026-10-30 18:08:57] [INFO] Generated tables in D:\Download\DT092_Phishing_Culture\results\tables:
+[2026-10-30 18:08:57] [INFO]   1. table1_demographics.csv (8 rows)
+[2026-10-30 18:08:57] [INFO]   2. table1_country_summary.csv (4 rows)
+[2026-10-30 18:08:57] [INFO]   3. table2_cfa_measurement.csv (24 rows)
+[2026-10-30 18:08:57] [INFO]   4. table2_cfa_fit_indices.csv (4 rows)
+[2026-10-30 18:08:57] [INFO]   5. table3_correlations.csv (32 rows)
+[2026-10-30 18:08:57] [INFO]   6. table4_descriptives.csv (32 rows)
+[2026-10-30 18:08:57] [INFO] ================================================================================

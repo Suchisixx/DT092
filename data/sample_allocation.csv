@@ -1,0 +1,5 @@
+country_code,country_name,simulated_n,simulated_pct,paper_n,paper_pct,tool_yes_n,tool_yes_pct,report_freq_4_or_5_pct,synthetic_disclaimer
+DE,Germany,306,30.09,306,30.09,204,66.67,61.11,Synthetic group label only; not real human respondents
+UK,United Kingdom,205,20.16,205,20.16,157,76.59,63.41,Synthetic group label only; not real human respondents
+US,United States,506,49.75,506,49.75,405,80.04,61.46,Synthetic group label only; not real human respondents
+POOLED,Total Pooled Sample,1017,100.0,1017,100.0,766,75.32,61.75,"Synthetic pooled sample; paper TOOL=75.5%, REPORT>=4=61.9%"

@@ -1,0 +1,418 @@
+{
+  "seed": 20261029,
+  "random_seed": 20261029,
+  "total_rows": 1017,
+  "row_count": 1017,
+  "total_columns": 28,
+  "sha256": "52c161dcd96ff568228e74c9c6517f2c2423f4bb2bee0860b511912d4aae5cbe",
+  "dataset_sha256": "52c161dcd96ff568228e74c9c6517f2c2423f4bb2bee0860b511912d4aae5cbe",
+  "checksum": "52c161dcd96ff568228e74c9c6517f2c2423f4bb2bee0860b511912d4aae5cbe",
+  "disclaimer": "CRITICAL METADATA NOTICE: This dataset comprises entirely synthetic, computer-simulated records generated to enable computational replication, multigroup structural equation modeling (SEM), and measurement invariance evaluation. It does NOT represent genuine empirical survey responses from actual human participants in Germany, the United Kingdom, or the United States. All distributions are algorithmically parameterized based on published summary statistics from Petrič & Just (2025).",
+  "description": "Synthetic multigroup dataset replicating Petrič & Just (2025) across Germany, UK, and USA.",
+  "note": "Computer-simulated synthetic data; not empirical human respondents.",
+  "manifest_version": "1.0.0",
+  "dataset_metadata": {
+    "dataset_name": "synthetic_multigroup.csv",
+    "dataset_path": "data/synthetic_multigroup.csv",
+    "dataset_type": "SYNTHETIC_SIMULATED_NOT_REAL_RESPONDENTS",
+    "simulation_version": "1.0.0",
+    "license": "Project-generated synthetic data (MIT / Academic Evaluation)",
+    "generated_utc": "2026-10-30T11:08:53.346505+00:00"
+  },
+  "data_provenance": {
+    "generator_script": "scripts/01_generate_multigroup_data.py",
+    "random_seed": 20261029,
+    "rng_algorithm": "NumPy PCG64 default_rng via SeedSequence.spawn(3)",
+    "output_sha256": "52c161dcd96ff568228e74c9c6517f2c2423f4bb2bee0860b511912d4aae5cbe",
+    "output_size_bytes": 65267,
+    "python_version": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "sample_allocation": {
+    "total_rows": 1017,
+    "total_columns": 28,
+    "country_counts": {
+      "DE": 306,
+      "UK": 205,
+      "US": 506
+    },
+    "country_percentages": {
+      "DE": 30.088,
+      "UK": 20.157,
+      "US": 49.754
+    },
+    "id_prefix": "SYN",
+    "id_first": "SYN0001",
+    "id_last": "SYN1017",
+    "unique_id_count": 1017
+  },
+  "column_schema_and_ranges": {
+    "respondent_id": {
+      "dtype": "object",
+      "role": "identifier",
+      "min": "SYN0001",
+      "max": "SYN1017",
+      "missing_count": 0,
+      "allowed_range": "SYN0001..SYN1017",
+      "range_valid": true
+    },
+    "country": {
+      "dtype": "object",
+      "role": "grouping",
+      "min": "DE",
+      "max": "US",
+      "missing_count": 0,
+      "allowed_range": "{'DE', 'UK', 'US'}",
+      "range_valid": true
+    },
+    "NORM1": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.2625,
+      "std": 1.1793,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "NORM2": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.2743,
+      "std": 1.1932,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "NORM3": {
+      "dtype": "int64",
+      "role": "indicator_reverse",
+      "min": 1,
+      "max": 5,
+      "mean": 3.1937,
+      "std": 1.1488,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "NORM4": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.2881,
+      "std": 1.2047,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "AWARE1": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.4051,
+      "std": 1.1247,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "AWARE2": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.4159,
+      "std": 1.1211,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "AWARE3": {
+      "dtype": "int64",
+      "role": "indicator_reverse",
+      "min": 1,
+      "max": 5,
+      "mean": 3.2704,
+      "std": 1.1615,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "AWARE4": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.4572,
+      "std": 1.1529,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "KNOW1": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.1485,
+      "std": 1.1682,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "KNOW2": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.2468,
+      "std": 1.1625,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "KNOW3": {
+      "dtype": "int64",
+      "role": "indicator_reverse",
+      "min": 1,
+      "max": 5,
+      "mean": 3.0236,
+      "std": 1.1584,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "KNOW4": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.1868,
+      "std": 1.134,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "COMM1": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.4631,
+      "std": 1.1531,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "COMM2": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.5054,
+      "std": 1.1347,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "COMM3": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.471,
+      "std": 1.1195,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "COMM4": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.468,
+      "std": 1.1326,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "ATT1": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.5477,
+      "std": 1.1198,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "ATT2": {
+      "dtype": "int64",
+      "role": "indicator_reverse",
+      "min": 1,
+      "max": 5,
+      "mean": 3.4169,
+      "std": 1.1507,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "ATT3": {
+      "dtype": "int64",
+      "role": "indicator_reverse",
+      "min": 1,
+      "max": 5,
+      "mean": 3.3776,
+      "std": 1.1523,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "ATT4": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.5644,
+      "std": 1.1268,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "RESP1": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.5644,
+      "std": 1.1433,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "RESP2": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.5202,
+      "std": 1.1337,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "RESP3": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.5369,
+      "std": 1.1393,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "RESP4": {
+      "dtype": "int64",
+      "role": "indicator",
+      "min": 1,
+      "max": 5,
+      "mean": 3.5428,
+      "std": 1.1782,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    },
+    "TOOL": {
+      "dtype": "int64",
+      "role": "tool_presence",
+      "min": 0,
+      "max": 1,
+      "mean": 0.7532,
+      "std": 0.4314,
+      "missing_count": 0,
+      "allowed_range": "{0, 1}",
+      "range_valid": true
+    },
+    "REPORT": {
+      "dtype": "int64",
+      "role": "behavioral_outcome",
+      "min": 1,
+      "max": 5,
+      "mean": 3.8112,
+      "std": 1.1011,
+      "missing_count": 0,
+      "allowed_range": "[1, 5]",
+      "range_valid": true
+    }
+  },
+  "data_integrity_and_validation": {
+    "all_checks_passed": true,
+    "missing_cells_total": 0,
+    "duplicate_feature_rows": 0,
+    "checks": {
+      "N_exact_1017": {
+        "passed": true,
+        "observed": 1017,
+        "expected": 1017
+      },
+      "country_DE_exact_306": {
+        "passed": true,
+        "observed": 306,
+        "expected": 306
+      },
+      "country_UK_exact_205": {
+        "passed": true,
+        "observed": 205,
+        "expected": 205
+      },
+      "country_US_exact_506": {
+        "passed": true,
+        "observed": 506,
+        "expected": 506
+      },
+      "unique_IDs_100pct": {
+        "passed": true,
+        "observed": 1017,
+        "expected": 1017
+      },
+      "zero_missing_cells": {
+        "passed": true,
+        "observed": 0,
+        "expected": 0
+      },
+      "likert_items_range_1_to_5": {
+        "passed": true,
+        "columns_checked": 25
+      },
+      "tool_variable_binary_0_1": {
+        "passed": true,
+        "unique_values": [
+          0,
+          1
+        ]
+      },
+      "required_columns_28": {
+        "passed": true,
+        "columns_count": 28
+      },
+      "no_duplicate_feature_rows": {
+        "passed": true,
+        "duplicate_count": 0
+      }
+    }
+  },
+  "non_misrepresentation_declaration": {
+    "is_synthetic": true,
+    "is_empirical_human_subjects": false,
+    "declaration_text": "CRITICAL METADATA NOTICE: This dataset comprises entirely synthetic, computer-simulated records generated to enable computational replication, multigroup structural equation modeling (SEM), and measurement invariance evaluation. It does NOT represent genuine empirical survey responses from actual human participants in Germany, the United Kingdom, or the United States. All distributions are algorithmically parameterized based on published summary statistics from Petrič & Just (2025).",
+    "paper_citation": "Petrič, G., & Just, J. N. (2025). Information security culture and phishing-reporting model: structural equivalence across Germany, UK, and USA. Journal of Cybersecurity, 11(1), tyaf011.",
+    "intended_use": "Academic statistical replication, cross-group SEM methodological benchmarking, and automated test suite validation."
+  }
+}

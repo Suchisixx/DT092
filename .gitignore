@@ -1,10 +1,4 @@
 .venv/
 __pycache__/
 *.pyc
-data/raw/public/*
-!data/raw/public/.gitkeep
-data/simulated/*.csv
-results/logs/*
-results/tables/*
-artifacts/synthetic_manifest.json
-artifacts/validation_summary.json
+.pytest_cache/

@@ -1,0 +1,93 @@
+{
+  "verified_utc": "2026-10-30T11:09:53.639875+00:00",
+  "all_checks_passed": true,
+  "checks_passed": 17,
+  "checks_total": 17,
+  "checks": [
+    {
+      "check": "clean_workspace_no_legacy_artifacts",
+      "passed": true,
+      "detail": "leftover_legacy=[]"
+    },
+    {
+      "check": "survey_question_reference_preserved",
+      "passed": true,
+      "detail": "data\\Survey_Question.md"
+    },
+    {
+      "check": "multigroup_dataset_exists",
+      "passed": true,
+      "detail": "data\\synthetic_multigroup.csv"
+    },
+    {
+      "check": "multigroup_manifest_exists",
+      "passed": true,
+      "detail": "data\\data_manifest.json"
+    },
+    {
+      "check": "sample_allocation_exists",
+      "passed": true,
+      "detail": "data\\sample_allocation.csv"
+    },
+    {
+      "check": "dataset_declaration_exists",
+      "passed": true,
+      "detail": "data\\DATASET_DECLARATION.md"
+    },
+    {
+      "check": "multigroup_dataset_sha256_matches_manifest",
+      "passed": true,
+      "detail": "SHA-256=52c161dcd96ff568228e74c9c6517f2c2423f4bb2bee0860b511912d4aae5cbe"
+    },
+    {
+      "check": "multigroup_N_1017_and_unique_IDs",
+      "passed": true,
+      "detail": "N=1017, unique_IDs=1017"
+    },
+    {
+      "check": "multigroup_country_allocation_306_205_506",
+      "passed": true,
+      "detail": "counts={'DE': 306, 'UK': 205, 'US': 506}"
+    },
+    {
+      "check": "multigroup_zero_missing_and_valid_domains",
+      "passed": true,
+      "detail": "missing=0, likert_ok=True, tool_ok=True"
+    },
+    {
+      "check": "exact_18_canonical_tables_no_duplicates",
+      "passed": true,
+      "detail": "found=18/18, missing=[], extra_duplicates=[]"
+    },
+    {
+      "check": "all_csv_estimates_finite_no_nan_or_inf",
+      "passed": true,
+      "detail": "non_finite_count=0 []"
+    },
+    {
+      "check": "all_p_values_strictly_in_0_1",
+      "passed": true,
+      "detail": "invalid_p_count=0 []"
+    },
+    {
+      "check": "no_averaged_p_values_in_multiseed_tables",
+      "passed": true,
+      "detail": "averaged_p_cols=[]"
+    },
+    {
+      "check": "measurement_invariance_nested_df_and_chi2_monotonic",
+      "passed": true,
+      "detail": "dfs=[711, 747, 783], chi2=[770.96, 808.22, 851.63]"
+    },
+    {
+      "check": "all_3_markdown_reports_present",
+      "passed": true,
+      "detail": "missing=[]"
+    },
+    {
+      "check": "execution_logs_present_and_converged_cleanly",
+      "passed": true,
+      "detail": "missing_logs=[], log_errors=[]"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+sample_size,chi2,df,p_value,cfi,tli,rmsea,srmr,aic,bic,loglik
+1017,281.3594,308,0.8597,1.0,1.0,0.0,0.0218,139.4467,484.1696,0.2767

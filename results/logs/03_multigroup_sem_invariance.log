@@ -1,0 +1,29 @@
+[2026-10-30 18:09:01] [INFO] ================================================================================
+[2026-10-30 18:09:01] [INFO] START: Multigroup SEM & Measurement Invariance Pipeline (Milestone M3)
+[2026-10-30 18:09:01] [INFO] Dataset: D:\Download\DT092_Phishing_Culture\data\synthetic_multigroup.csv
+[2026-10-30 18:09:01] [INFO] ================================================================================
+[2026-10-30 18:09:01] [INFO] Loaded synthetic dataset: 1017 rows, 28 columns
+[2026-10-30 18:09:01] [INFO] Sample distribution: DE=306, UK=205, US=506
+[2026-10-30 18:09:01] [INFO] --- ESTIMATING POOLED BASELINE SEM (TABLE 5) ---
+[2026-10-30 18:09:01] [INFO] Pooled SEM optimization status: Optimization terminated successfully (converged=True)
+[2026-10-30 18:09:01] [INFO] Endogenous R²: ATT=0.3704, RESP=0.4677, REPORT=0.1455
+[2026-10-30 18:09:01] [INFO] [SAVED] Table 5 Pooled SEM -> D:\Download\DT092_Phishing_Culture\results\tables\table5_pooled_sem.csv (15 rows)
+[2026-10-30 18:09:01] [INFO] [SAVED] Table 5 Fit Indices -> D:\Download\DT092_Phishing_Culture\results\tables\table5_sem_fit_indices.csv
+[2026-10-30 18:09:01] [INFO] --- ESTIMATING COUNTRY-SPECIFIC MULTIGROUP SEM (TABLE 6) ---
+[2026-10-30 18:09:01] [INFO] Country DE SEM fit: Optimization terminated successfully (converged=True)
+[2026-10-30 18:09:01] [INFO] Country UK SEM fit: Optimization terminated successfully (converged=True)
+[2026-10-30 18:09:01] [INFO] Country US SEM fit: Optimization terminated successfully (converged=True)
+[2026-10-30 18:09:01] [INFO] [SAVED] Table 6 Multigroup SEM (Wide) -> D:\Download\DT092_Phishing_Culture\results\tables\table6_multigroup_sem.csv (15 rows)
+[2026-10-30 18:09:01] [INFO] [SAVED] Table 6 Multigroup SEM (Long) -> D:\Download\DT092_Phishing_Culture\results\tables\table6_multigroup_sem_long.csv (45 rows)
+[2026-10-30 18:09:01] [INFO] [SAVED] Table 6 Cross-Group Tests -> D:\Download\DT092_Phishing_Culture\results\tables\table6_cross_group_tests.csv (15 rows)
+[2026-10-30 18:09:01] [INFO] --- EVALUATING MEASUREMENT INVARIANCE (TABLE 7) ---
+[2026-10-30 18:09:01] [INFO] Baseline null model: chi2=9887.0451, df=828
+[2026-10-30 18:09:02] [INFO] Configural Model: chi2=770.9559, df=711, cfi=0.9934, rmsea=0.0091, srmr=0.0356
+[2026-10-30 18:09:03] [INFO] Metric Model: chi2=808.2167, df=747, cfi=0.9932, rmsea=0.0090, srmr=0.0367
+[2026-10-30 18:09:04] [INFO] Scalar Model: chi2=851.6323, df=783, cfi=0.9924, rmsea=0.0093, srmr=0.0367
+[2026-10-30 18:09:04] [INFO] [SAVED] Table 7 Measurement Invariance -> D:\Download\DT092_Phishing_Culture\results\tables\table7_measurement_invariance.csv (3 rows)
+[2026-10-30 18:09:04] [INFO] --- RUNNING INTEGRITY & CONTRACT VALIDATION CHECKS ---
+[2026-10-30 18:09:04] [INFO] [PASS] All post-execution assertions verified successfully!
+[2026-10-30 18:09:04] [INFO] ================================================================================
+[2026-10-30 18:09:04] [INFO] COMPLETED: Milestone M3 Multigroup SEM & Invariance Successfully Finished.
+[2026-10-30 18:09:04] [INFO] ================================================================================

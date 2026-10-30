@@ -1,0 +1,5 @@
+country,n,percentage,tool_available_n,tool_available_pct,report_mean,report_sd
+Germany (DE),306,30.09,204,66.67,3.7908,1.0904
+United Kingdom (UK),205,20.16,157,76.59,3.839,1.1019
+United States (US),506,49.75,405,80.04,3.8123,1.1091
+Pooled Sample (ALL),1017,100.0,766,75.32,3.8112,1.1011

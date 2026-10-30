@@ -1,0 +1,4 @@
+model_level,model,constraints,comparison_model,chi2,df,p_val,p_value,cfi,tli,rmsea,srmr,delta_chi2,delta_df,p_delta_chi2,delta_p,delta_cfi,delta_rmsea,delta_srmr,invariance_decision
+1. Configural Invariance,Configural,"None (Equal form, unconstrained loadings/covariances)",-,770.9559,711,0.0588,0.0588,0.9934,0.9923,0.0091,0.0356,-,-,-,-,-,-,-,Supported (Baseline multi-sample fit confirmed)
+2. Metric Invariance,Metric,Equal factor loadings (Lambda_DE = Lambda_UK = Lambda_US),Configural,808.2167,747,0.0594,0.0594,0.9932,0.9925,0.009,0.0367,37.2608,36,0.4109,0.4109,-0.0001,-0.0001,0.0011,Full Metric Invariance Confirmed (|delta CFI| <= 0.010)
+3. Scalar Invariance,Scalar,Equal factor loadings and indicator intercepts (tau_DE = tau_UK = tau_US),Metric,851.6323,783,0.0443,0.0443,0.9924,0.992,0.0093,0.0367,43.4156,36,0.1847,0.1847,-0.0008,0.0003,-0.0,Full Scalar Invariance Confirmed (|delta CFI| <= 0.010)

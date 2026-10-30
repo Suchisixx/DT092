@@ -1,0 +1,9 @@
+variable_category,subcategory,pooled_n,pooled_pct,germany_n,germany_pct,uk_n,uk_pct,usa_n,usa_pct
+Sample Size,Total Respondents,1017,100.0,306,30.09,205,20.16,506,49.75
+Reporting Tool,Tool Available (TOOL=1),766,75.32,204,66.67,157,76.59,405,80.04
+Reporting Tool,Tool Absent (TOOL=0),251,24.68,102,33.33,48,23.41,101,19.96
+Reporting Behavior (REPORT),1 - Never,25,2.46,5,1.63,6,2.93,14,2.77
+Reporting Behavior (REPORT),2 - Rarely,108,10.62,38,12.42,19,9.27,51,10.08
+Reporting Behavior (REPORT),3 - Occasionally,256,25.17,76,24.84,50,24.39,130,25.69
+Reporting Behavior (REPORT),4 - Frequently,273,26.84,84,27.45,57,27.8,132,26.09
+Reporting Behavior (REPORT),5 - Very Frequently,355,34.91,103,33.66,73,35.61,179,35.38

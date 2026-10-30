@@ -1,50 +1,74 @@
-# DT092 — Khung Thực Nghiệm Tái Lập Có Chọn Lọc Cấu Trúc Khảo Sát & SEM Về Văn Hóa An Toàn Thông Tin Và Hành Vi Báo Cáo Phishing - Lần 3
+# DT092 — Mô Hình Văn Hóa Báo Cáo Phishing Trong Tổ Chức Giả Lập (SEM Đa Nhóm & Bất Biến Đo Lường: Đức, Anh, Mỹ)
 
-## 1. Giới thiệu & Tài liệu nền
-Dự án xây dựng khung thực nghiệm tái lập có chọn lọc cấu trúc khảo sát (Survey Instrument) và mô hình phương trình cấu trúc (CFA/SEM) dựa trên bài báo Q1:
-> **Petrič, G., & Just, J. N. (2025).** *Information security culture and phishing-reporting model: structural equivalence across Germany, UK, and USA*. Journal of Cybersecurity, 11(1), tyaf011, 1–17. https://doi.org/10.1093/cybsec/tyaf011
+## 1. Giới thiệu & Nghiên cứu Tham khảo
+Dự án xây dựng khung thực nghiệm mô phỏng định lượng **Phân tích Nhân tố Khẳng định (CFA)**, **Kiểm định Tính Bất biến Đo lường (Measurement Invariance)** và **Mô hình Phương trình Cấu trúc Đa nhóm (Multigroup SEM)** trên 3 quốc gia (**Germany `N = 306`**, **United Kingdom `N = 205`**, **United States `N = 506`**; tổng **`N = 1,017`**) bám sát cấu trúc nghiên cứu của bài báo Q1:
 
-- **Dữ liệu thực nghiệm**: Bộ dữ liệu `data/simulated/synthetic_sem.csv` ($N = 1.017$ dòng, 27 cột, `seed = 20261016`, SHA-256: `2cae044842247f21563e4c73abf63f8b26be6b4499dcea4160f61249e714c6bb`) là **dữ liệu tổng hợp (synthetic data)** dùng để kiểm chứng toàn diện quy trình chuẩn bị dữ liệu, CFA, SEM (`semopy`), tương tác `COMM × TOOL`, hồi quy độ nhạy `OLS-HC3` (`statsmodels`), độ tin cậy/giá trị thang đo, độ ổn định đa seed và 5-Fold Cross-Validation chống rò rỉ dữ liệu.
+> **Petrič, G., & Just, J. N. (2025).** *Information security culture and phishing-reporting model: structural equivalence across Germany, UK, and USA*. Journal of Cybersecurity, 11(1), tyaf011, 1–17. DOI: [10.1093/cybsec/tyaf011](https://academic.oup.com/cybersecurity/article/11/1/tyaf011/8128837)
 
----
-
-## 2. Trình tự 11 File Code (`scripts/`) & Chức năng từng File
-
-| Thứ tự | File Code (`scripts/`) | Mục tiêu ngắn gọn | File Log Tiếng Việt (`results/logs/`) | Tập kết quả xuất ra |
-| :---: | :--- | :--- | :--- | :--- |
-| **00** | `00_run_all_pipeline.py` | **Chạy tự động toàn bộ Bước 01 $\rightarrow$ Bước 11** chỉ bằng 1 lệnh duy nhất. | In tổng hợp trên màn hình console | Toàn bộ `artifacts/` & `results/` |
-| **01** | `01_inspect_public_data.py` | Kiểm kê tệp khảo sát công khai trong `data/raw/public/`, tính SHA-256, đếm dòng/cột/tỷ lệ thiếu. | `01_kiem_ke_du_lieu_cong_khai.log` | `results/tables/public_data_inventory.csv` |
-| **02** | `02_generate_synthetic.py` | Sinh dữ liệu mô phỏng $N=1.017$ (`seed=20261016`) theo tham số `config/model_config.yml`. | `02_sinh_du_lieu_mo_phong.log` | `data/simulated/synthetic_sem.csv`<br/>`artifacts/synthetic_manifest.json` |
-| **03** | `03_validate_data.py` | Kiểm tra 7 tiêu chí chất lượng kỹ thuật (cỡ mẫu, ID duy nhất, không trống, miền Likert 1–5, không trùng dòng). | `03_kiem_tra_chat_luong_du_lieu.log` | `results/tables/validation_checks.csv`<br/>`artifacts/validation_summary.json` |
-| **04** | `04_run_baseline_sem.py` | Ước lượng mô hình đo lường **CFA** (6 nhân tố) và mô hình **SEM cơ sở (Baseline)**. | `04_cfa_va_sem_baseline.log` | `artifacts/baseline/cfa_*.csv`<br/>`artifacts/baseline/sem_*.csv` |
-| **05** | `05_run_interaction_sem.py` | Chuẩn hóa tâm `COMM`, `TOOL` và ước lượng **SEM mở rộng có tương tác `COMM × TOOL`** (kiểm định H7b). | `05_sem_tuong_tac_H7b.log` | `artifacts/interaction/H7b_interaction_result.csv`<br/>`interaction_*.csv` |
-| **06** | `06_compare_models.py` | Đối chiếu 14 hệ số đường dẫn giữa SEM Baseline và SEM Interaction ($\Delta\beta$ và kết luận ý nghĩa). | `06_so_sanh_baseline_va_tuong_tac.log` | `artifacts/sensitivity/baseline_vs_interaction.csv` |
-| **07** | `07_sensitivity_hc3.py` | Phân tích độ nhạy bằng **hồi quy OLS với sai số chuẩn vững HC3** trên điểm trung bình thang đo. | `07_phan_tich_do_nhay_ols_hc3.log` | `artifacts/sensitivity/hc3_sensitivity_results.csv` |
-| **08** | `08_run_paper_aligned_sem.py` | Ước lượng mô hình SEM đối chiếu cấu trúc bài báo (E02) và lưu thông tin hội tụ SLSQP. | `08_sem_doi_chieu_bai_bao.log` | `artifacts/paper_aligned/paper_aligned_*.csv` |
-| **09** | `09_reliability_validity.py` | Tính **Cronbach's Alpha, Composite Reliability (CR), AVE** và **Ma trận Fornell-Larcker** đối chiếu Table 3 & 5 của bài báo. | `09_do_tin_cay_va_gia_tri_thang_do.log` | `artifacts/sensitivity/reliability_validity.csv`<br/>`fornell_larcker_matrix.csv` |
-| **10** | `10_repeated_runs_and_cv.py` | Chạy lặp **5 Seeds độc lập**, **Ablation 3 mô hình** (`M1, M2, M3`), **5-Fold CV chống rò rỉ** & **Phân tích lỗi**. | `10_do_on_dinh_5seeds_va_5fold_cv.log` | `artifacts/repeated_runs/*.csv` |
-| **11** | `11_negative_tests_and_benchmark.py` | Chạy **8 kịch bản Negative Tests** (tiêm lỗi dữ liệu) & đo **Thời gian chạy (ms), RAM đỉnh (MB), số vòng lặp hội tụ**. | `11_kiem_thu_loi_va_chi_phi_tinh_toan.log` | `results/tables/negative_tests_report.csv`<br/>`artifacts/runtime_benchmark.csv` |
+- **Tuyên bố minh bạch dữ liệu**: Bộ dữ liệu `data/synthetic_multigroup.csv` (`N = 1,017`, 28 cột, `seed = 20261029`, `SHA-256: 52c161dcd96ff568228e74c9c6517f2c2423f4bb2bee0860b511912d4aae5cbe`) là **dữ liệu tổng hợp mô phỏng bằng máy tính (synthetic data)** được tham số hóa từ các thống kê công bố của bài báo gốc; tuyệt đối không phải phản hồi khảo sát thực tế từ người tham gia tại Đức, Anh và Mỹ (xem `data/DATASET_DECLARATION.md`).
 
 ---
 
-## 3. Hướng dẫn cài đặt và chạy lại từ đầu (Windows PowerShell)
+## 2. Cấu trúc Thư mục Dự án
 
-```powershell
-# 1. Tạo và kích hoạt môi trường ảo
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-
-# 2. Chạy toàn bộ 11 bước thực nghiệm chỉ bằng 1 lệnh duy nhất:
-python scripts/00_run_all_pipeline.py
+```text
+DT092_Phishing_Culture/
+├── data/
+│   ├── synthetic_multigroup.csv        # Dữ liệu mô phỏng đa nhóm N=1,017 (DE=306, UK=205, US=506)
+│   ├── sample_allocation.csv           # Thống kê phân bổ mẫu & tỷ lệ TOOL / REPORT theo quốc gia
+│   ├── data_manifest.json              # Siêu dữ liệu seed, tham số DGP & mã băm SHA-256
+│   ├── DATASET_DECLARATION.md          # Tuyên bố đạo đức & nguồn gốc dữ liệu tổng hợp
+│   └── Survey_Question.md              # Bộ 26 câu hỏi khảo sát Tiếng Việt (6 thang đo + TOOL + REPORT)
+├── scripts/
+│   ├── 00_run_pipeline.py              # Chạy trọn gói Bước 01 -> Bước 05 bằng 1 lệnh duy nhất
+│   ├── 01_generate_multigroup_data.py  # Sinh dữ liệu đa nhóm & kiểm tra 8 tiêu chí kỹ thuật
+│   ├── 02_cfa_and_descriptives.py      # Xuất Bảng 1, Bảng 2 (CFA), Bảng 3 (Tương quan), Bảng 4 (Mô tả)
+│   ├── 03_multigroup_sem_invariance.py # Xuất Bảng 5 (Pooled SEM), Bảng 6 (Multigroup + Wald), Bảng 7 (Invariance)
+│   ├── 04_hypothesis_and_robustness.py # Xuất Bảng 8, Bảng 9 (OLS-HC3 + 5 Seeds), paper_comparison.csv & báo cáo
+│   └── 05_verify_all.py                # Kiểm toán tự động toàn bộ đầu ra, miền p-value [0,1] & hội tụ
+├── results/
+│   ├── tables/                         # 18 bảng CSV kết quả chuẩn hóa (Bảng 1 -> Bảng 9 + paper_comparison.csv)
+│   ├── logs/                           # 5 nhật ký thực thi tương ứng Bước 01 -> Bước 05
+│   └── verification_report.json        # Báo cáo kiểm toán tự động
+├── reports/
+│   ├── results_summary.md              # Tổng hợp kết quả thực nghiệm & đối chiếu bài báo gốc
+│   ├── methodology_and_assumptions.md  # Cơ sở toán học (MLW vs WLSMV, OLS-HC3, Invariance, RMSEA)
+│   └── limitations.md                  # Các giới hạn phương pháp luận & hướng dẫn trình bày báo cáo
+└── tests/
+    ├── run_e2e_tests.py                # Trình chạy 120 bài kiểm thử tự động 4 tầng (Opaque-Box E2E)
+    ├── test_tier1_feature_coverage.py  # Tier 1: Kiểm thử 19 nhóm tính năng (95 tests)
+    ├── test_tier2_boundaries.py        # Tier 2: Kiểm thử biên & trường hợp suy biến (12 tests)
+    ├── test_tier3_pairwise.py          # Tier 3: Kiểm thử liên kết chéo giữa các bảng/mô hình (8 tests)
+    └── test_tier4_e2e.py               # Tier 4: Kiểm thử tích hợp toàn tuyến & độ sạch thư mục (5 tests)
 ```
 
 ---
 
-## 4. Tài liệu giải thích kết quả & Báo cáo hoàn chỉnh
+## 3. Đối chiếu 18 Bảng Kết quả (`results/tables/`) với Bài báo Gốc
 
-- **Giải thích chi tiết 6 Tập kết quả & So sánh trực tiếp với bài báo gốc**: Xem tại [`artifacts/README_GIAI_THICH_KET_QUA.md`](artifacts/README_GIAI_THICH_KET_QUA.md).
-- **Danh mục bảng thống kê & 11 file log Tiếng Việt**: Xem tại [`results/README_BANG_VA_LOG.md`](results/README_BANG_VA_LOG.md).
-- **Bảng đối chiếu tổng hợp 15 giả thuyết Paper $\leftrightarrow$ DT092**: Xem tại [`report/paper_to_results_mapping.csv`](report/paper_to_results_mapping.csv).
-- **Báo cáo đề tài hoàn chỉnh (20–30 trang)**: Xem tại [`report/BAO_CAO_DT092_HOAN_CHINH.md`](report/BAO_CAO_DT092_HOAN_CHINH.md).
+| Thành phần trong Petrič & Just (2025) | Tệp CSV trong `results/tables/` | Nội dung chính |
+| :--- | :--- | :--- |
+| **Table 1** (p. 7 — Mẫu & Công cụ) | `table1_demographics.csv`<br/>`table1_country_summary.csv` | Cỡ mẫu `DE=306, UK=205, US=506` (`N=1,017`), tỷ lệ `TOOL=1` (`75.32%` vs. bài báo `75.5%`), tần suất báo cáo `REPORT` |
+| **Tables 2 & 3** (pp. 7–8 — CFA, $\alpha$, AVE) | `table2_cfa_measurement.csv`<br/>`table2_cfa_fit_indices.csv` | Hệ số tải chuẩn hóa 24 biến quan sát, $\chi^2, df, \text{CFI}, \text{TLI}, \text{RMSEA}, \text{SRMR}$, Cronbach's $\alpha$, CR, AVE, $\sqrt{\text{AVE}}$ |
+| **Invariance** (pp. 7–8 — Bất biến đo lường) | `table7_measurement_invariance.csv` | Kiểm định lồng nhau 3 cấp: **Configural** ($df=711$), **Metric** ($df=747, \Delta\text{CFI}=-0.0001$), **Scalar** ($df=783, \Delta\text{CFI}=-0.0008$) |
+| **Table 4** (p. 10 — Thống kê mô tả) | `table4_descriptives.csv` | Mean, SD, Min, Max, Skewness, Kurtosis cho mẫu gộp (`POOLED`) và từng quốc gia (`DE`, `UK`, `US`) |
+| **Table 5** (p. 11 — Tương quan) | `table3_correlations.csv` | Ma trận tương quan Pearson điểm trung bình cộng thang đo trên mẫu gộp và từng quốc gia (đạt 100% Fornell-Larcker) |
+| **Figure 2** (p. 11 — SEM Mẫu gộp) | `table5_pooled_sem.csv`<br/>`table5_sem_fit_indices.csv` | Ước lượng 15 đường dẫn cấu trúc (`H1a`–`H7b`, bao gồm `COMM × TOOL -> REPORT`) và chỉ số độ phù hợp trên `N=1,017` |
+| **Table 6** (p. 11 — SEM Đa nhóm) | `table6_multigroup_sem.csv`<br/>`table6_multigroup_sem_long.csv`<br/>`table6_multigroup_fit.csv`<br/>`table6_cross_group_tests.csv` | Hệ số đường dẫn & $R^2$ theo từng nước (`DE`, `UK`, `US`), kèm kiểm định **Wald $\chi^2(2)$** và **$Z$-test từng cặp nước** trên hệ số chưa chuẩn hóa $B/\text{SE}(B)$ |
+| **Table 7** (p. 13 — Kiểm định giả thuyết) | `table8_hypothesis_testing.csv` | Kết luận `Supported` / `Partially supported` / `Not supported` cho 15 giả thuyết trên mẫu gộp và 3 quốc gia |
+| **Độ vững & So sánh trực tiếp bài báo** | `table9_robustness_hc3.csv`<br/>`table9_country_ols_hc3.csv`<br/>`table9_multiseed_raw_runs.csv`<br/>`paper_comparison.csv` | Hồi quy sai số chuẩn vững **OLS-HC3**, 300 dòng kết quả thô qua **5 seeds độc lập** (không trung bình cộng $p$-value) và sai số $|\beta_{\text{sim}} - \beta_{\text{paper}}|$ |
+
+---
+
+## 4. Hướng dẫn Chạy Tái lập & Kiểm thử (Windows PowerShell)
+
+```powershell
+# Thiết lập đường dẫn thư viện môi trường ảo .venv
+$env:PYTHONPATH = "d:\Download\DT092_Phishing_Culture\.venv\Lib\site-packages"
+
+# 1. Chạy toàn bộ 5 bước thực nghiệm từ đầu đến cuối (~20 giây)
+python scripts/00_run_pipeline.py
+
+# 2. Chạy bộ 120 bài kiểm thử tự động 4 tầng (Opaque-Box E2E Test Suite)
+python tests/run_e2e_tests.py
+```

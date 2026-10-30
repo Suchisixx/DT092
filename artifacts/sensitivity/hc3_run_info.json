@@ -1,7 +1,0 @@
-{
-  "data": "D:\\Download\\DT092_Phishing_Culture\\data\\simulated\\synthetic_sem.csv",
-  "method": "OLS trên điểm trung bình thang đo với sai số chuẩn vững HC3 (statsmodels)",
-  "n": 1017,
-  "synthetic_data": true,
-  "interpretation": "Phân tích độ nhạy cấp độ điểm trung bình thang đo; hệ số hồi quy chưa chuẩn hóa được dùng để kiểm tra tính nhất quán về dấu và ý nghĩa thống kê so với SEM."
-}
