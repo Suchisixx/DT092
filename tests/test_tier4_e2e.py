@@ -1,8 +1,8 @@
 """
-Tier 4: Real-World Scenarios & Full Pipeline Integration Test Suite
-Opaque-Box E2E Testing Track for DT092 Multigroup SEM Replication (Petrič & Just, 2025).
+Tầng 4: Bộ kiểm thử kịch bản thực tế & tích hợp toàn bộ pipeline (Full Pipeline Integration)
+Luồng kiểm thử hộp đen E2E cho thí nghiệm tái tạo SEM đa nhóm DT092 (Petrič & Just, 2025).
 
-Tests end-to-end deliverable completeness, pipeline execution contracts, determinism, and system integrity.
+Kiểm tra tính đầy đủ của các sản phẩm đầu ra, hợp đồng thực thi đầu-cuối, tính tất định và tính toàn vẹn hệ thống.
 """
 
 import os
@@ -18,14 +18,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 class TestTier4RealWorldScenariosAndIntegration(unittest.TestCase):
-    """Tier 4: Full Pipeline Integration, Deliverable Audits, and Reproducibility Verification"""
+    """Tầng 4: Tích hợp toàn trình pipeline, kiểm toán sản phẩm đầu ra và xác minh khả năng tái lập"""
 
     TABLES_DIR = PROJECT_ROOT / "results" / "tables"
     REPORTS_DIR = PROJECT_ROOT / "reports"
     DATA_DIR = PROJECT_ROOT / "data"
 
     def test_01_full_deliverable_table_inventory(self):
-        """Scenario: All 18 canonical deliverable CSV tables exist and zero duplicate alias CSVs remain."""
+        """Kịch bản: Đủ 18 bảng CSV đầu ra chuẩn tồn tại và không còn bất kỳ tệp CSV trùng lặp nào."""
         if not self.TABLES_DIR.exists():
             self.skipTest(f"Pipeline tables directory {self.TABLES_DIR} not yet generated")
 
@@ -55,7 +55,7 @@ class TestTier4RealWorldScenariosAndIntegration(unittest.TestCase):
                          f"Mismatch in results/tables/: missing={expected_tables - found_files}, extra={found_files - expected_tables}")
 
     def test_02_full_deliverable_report_inventory(self):
-        """Scenario: All 3 comprehensive markdown reports exist and are non-empty."""
+        """Kịch bản: Cả 3 báo cáo tổng hợp Markdown đều tồn tại và có nội dung đầy đủ."""
         if not self.REPORTS_DIR.exists():
             self.skipTest(f"Pipeline reports directory {self.REPORTS_DIR} not yet generated")
 
@@ -70,7 +70,7 @@ class TestTier4RealWorldScenariosAndIntegration(unittest.TestCase):
             self.assertGreater(rep_path.stat().st_size, 500, f"Report {rep} is unexpectedly small")
 
     def test_03_automated_verification_script_execution(self):
-        """Scenario: Execute scripts/05_verify_all.py and assert exit code 0."""
+        """Kịch bản: Thực thi trực tiếp scripts/05_verify_all.py và xác nhận mã thoát bằng 0."""
         verify_script = PROJECT_ROOT / "scripts" / "05_verify_all.py"
         self.assertTrue(verify_script.exists(), f"Verification script missing: {verify_script}")
 
@@ -80,7 +80,7 @@ class TestTier4RealWorldScenariosAndIntegration(unittest.TestCase):
                          f"Verification script failed with exit code {res.returncode}.\nSTDOUT: {res.stdout}\nSTDERR: {res.stderr}")
 
     def test_04_pipeline_reproducibility_and_checksum_stability(self):
-        """Scenario: Verify data manifest checksum matches current synthetic dataset."""
+        """Kịch bản: Xác minh mã băm SHA-256 trong data_manifest.json khớp tuyệt đối với tập dữ liệu hiện tại."""
         manifest_path = self.DATA_DIR / "data_manifest.json"
         dataset_path = self.DATA_DIR / "synthetic_multigroup.csv"
         if not (manifest_path.exists() and dataset_path.exists()):
@@ -97,7 +97,7 @@ class TestTier4RealWorldScenariosAndIntegration(unittest.TestCase):
                          "Synthetic dataset has diverged from recorded manifest checksum!")
 
     def test_05_workspace_cleanliness_and_boundary_isolation(self):
-        """Scenario: Verify that no legacy directories or loose CSVs exist in root or tests/."""
+        """Kịch bản: Xác minh không còn thư mục cũ hoặc tệp CSV rác nằm ở thư mục gốc hay thư mục tests/."""
         root_csvs = list(PROJECT_ROOT.glob("*.csv"))
         self.assertEqual(len(root_csvs), 0, f"Leaked CSV files in project root: {[f.name for f in root_csvs]}")
 

@@ -1,8 +1,8 @@
 """
-Tier 2: Boundary & Corner Cases Test Suite
-Opaque-Box E2E Testing Track for DT092 Multigroup SEM Replication (Petrič & Just, 2025).
+Tầng 2: Bộ kiểm thử các trường hợp biên và góc khuất (Boundary & Corner Cases)
+Luồng kiểm thử hộp đen E2E cho thí nghiệm tái tạo SEM đa nhóm DT092 (Petrič & Just, 2025).
 
-Focuses on edge cases, domain stress conditions, boundary limits, and mathematical invariants.
+Tập trung vào các trường hợp biên, điều kiện cực hạn của miền dữ liệu, giới hạn tham số và bất biến toán học.
 """
 
 import os
@@ -18,7 +18,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 class TestTier2BoundariesAndCornerCases(unittest.TestCase):
-    """Tier 2: Comprehensive Boundary, Corner Case, and Stress Tests"""
+    """Tầng 2: Kiểm thử toàn diện giá trị biên, trường hợp đặc biệt và điều kiện cực hạn"""
 
     DATA_PATH = PROJECT_ROOT / "data" / "synthetic_multigroup.csv"
 
@@ -30,7 +30,7 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
             return list(reader)
 
     def test_01_no_missing_or_null_values_in_dataset(self):
-        """Corner Case: Ensure 0 missing, null, NaN, or whitespace-only cells across all 1,017 rows."""
+        """Trường hợp đặc biệt: Đảm bảo không có ô trống, null, NaN hoặc chỉ chứa khoảng trắng trên toàn bộ 1.017 dòng."""
         rows = self._load_data_if_available()
         for i, row in enumerate(rows):
             for col, val in row.items():
@@ -41,7 +41,7 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
                                 f"Missing sentinel in row {i}, col {col}: {clean_val}")
 
     def test_02_likert_boundary_clamping_and_rejection(self):
-        """Boundary Case: Enforce strict [1, 5] bounds; verify no values at 0, 6, -1, or 999."""
+        """Trường hợp biên: Bắt buộc miền giá trị nghiêm ngặt [1, 5]; xác nhận không có giá trị 0, 6, -1 hoặc 999."""
         rows = self._load_data_if_available()
         constructs = ["NORM", "AWARE", "KNOW", "COMM", "ATT", "RESP"]
         cols = [f"{c}{i}" for c in constructs for i in range(1, 5)] + ["REPORT"]
@@ -53,7 +53,7 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
                 self.assertNotIn(val, [0.0, 6.0, -1.0, 999.0], f"Forbidden boundary value {val} in {c}")
 
     def test_03_binary_tool_domain_boundary(self):
-        """Boundary Case: Binary TOOL column must strictly contain 0 or 1, rejecting floats/other values."""
+        """Trường hợp biên: Cột nhị phân TOOL chỉ được chứa giá trị 0 hoặc 1, từ chối số thực lẻ hoặc giá trị khác."""
         rows = self._load_data_if_available()
         for i, r in enumerate(rows):
             tool_val = r["TOOL"]
@@ -62,7 +62,7 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
             self.assertTrue(float_val in (0.0, 1.0))
 
     def test_04_zero_variance_detection_per_subsample(self):
-        """Corner Case: Detect degenerate / zero-variance indicators across all 3 countries."""
+        """Trường hợp đặc biệt: Phát hiện các biến chỉ báo suy biến / phương sai bằng 0 trên cả 3 quốc gia."""
         rows = self._load_data_if_available()
         constructs = ["NORM", "AWARE", "KNOW", "COMM", "ATT", "RESP"]
         indicator_cols = [f"{c}{i}" for c in constructs for i in range(1, 5)]
@@ -79,35 +79,35 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
                                    f"Indicator {col} has near-zero variance {variance:.4f} in country {country}")
 
     def test_05_id_uniqueness_and_contiguous_sequence(self):
-        """Boundary Case: Enforce strictly 1,017 unique IDs from SYN0001 to SYN1017."""
+        """Trường hợp biên: Bắt buộc đúng 1.017 mã định danh duy nhất liên tiếp từ SYN0001 đến SYN1017."""
         rows = self._load_data_if_available()
         ids = [r["respondent_id"] for r in rows]
         self.assertEqual(len(ids), 1017)
         self.assertEqual(len(set(ids)), 1017)
         expected_ids = [f"SYN{i:04d}" for i in range(1, 1018)]
-        # All expected IDs should be present
+        # Tất cả mã định danh kỳ vọng đều phải xuất hiện đầy đủ
         self.assertEqual(set(ids), set(expected_ids), "Respondent IDs do not match SYN0001-SYN1017 sequence")
 
     def test_06_non_negative_residual_variances_no_heywood_cases(self):
-        """Corner Case: Check that measurement and structural models have non-negative error variances."""
-        # Inspect Table 2 or baseline CFA for negative variance estimates
+        """Trường hợp đặc biệt: Kiểm tra mô hình đo lường và cấu trúc không có phương sai sai số âm (Heywood cases)."""
+        # Kiểm tra Bảng 2 CFA để phát hiện các ước lượng phương sai âm hoặc hệ số tải vượt ngưỡng
         cfa_table = PROJECT_ROOT / "results" / "tables" / "table2_cfa_measurement.csv"
         if not cfa_table.exists():
             self.skipTest("No CFA estimates table available yet")
         with open(cfa_table, "r", encoding="utf-8") as f:
             rows = list(csv.DictReader(f))
         for r in rows:
-            # If residual/error variance column exists, assert positive
+            # Nếu cột phương sai phần dư tồn tại thì giá trị phải dương
             if "variance" in r:
                 var_val = float(r["variance"])
                 self.assertGreater(var_val, 0.0, f"Heywood case: negative error variance for {r.get('indicator', '')}: {var_val}")
             if "std_loading" in r:
                 std_l = float(r["std_loading"])
-                # Standardized loading must be <= 1.0 (no Heywood loading case)
+                # Hệ số tải chuẩn hóa không được vượt quá 1.0 (tránh hiện tượng Heywood)
                 self.assertLessEqual(std_l, 1.05, f"Heywood case: standardized loading > 1.0: {std_l}")
 
     def test_07_probability_p_value_strict_bounds(self):
-        """Boundary Case: All p-values across all generated tables must strictly satisfy 0 <= p <= 1."""
+        """Trường hợp biên: Mọi giá trị p trong tất cả các bảng kết quả phải thỏa mãn nghiêm ngặt 0 <= p <= 1."""
         tables_dir = PROJECT_ROOT / "results" / "tables"
         if not tables_dir.exists():
             self.skipTest("No tables directory available")
@@ -128,7 +128,7 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
                                     pass
 
     def test_08_correlation_matrix_positive_semi_definiteness(self):
-        """Mathematical Boundary: Verify correlation matrices do not have negative eigenvalues."""
+        """Biên toán học: Xác minh các ma trận tương quan đối xứng và có đường chéo chính bằng 1.0."""
         table3_path = PROJECT_ROOT / "results" / "tables" / "table3_correlations.csv"
         if not table3_path.exists():
             self.skipTest("Table 3 not yet generated")
@@ -138,7 +138,7 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
         vars_list = ["REPORT", "ATT", "RESP", "KNOW", "COMM", "NORM", "AWARE", "TOOL"]
         for g in groups:
             g_rows = {r["variable"]: r for r in rows if r["group"] == g}
-            # Build 8x8 matrix
+            # Dựng ma trận tương quan 8x8
             matrix = []
             for v1 in vars_list:
                 if v1 in g_rows:
@@ -146,14 +146,14 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
                     if len(row) == len(vars_list):
                         matrix.append(row)
             if len(matrix) == len(vars_list):
-                # Check Gershgorin circle or symmetry
+                # Kiểm tra đường chéo đơn vị và tính đối xứng của ma trận
                 for i in range(len(matrix)):
                     self.assertAlmostEqual(matrix[i][i], 1.0, places=3)
                     for j in range(len(matrix)):
                         self.assertAlmostEqual(matrix[i][j], matrix[j][i], places=3)
 
     def test_09_degrees_of_freedom_strictly_positive(self):
-        """Boundary Case: Ensure df >= 1 for all estimated models."""
+        """Trường hợp biên: Đảm bảo bậc tự do df >= 1 cho mọi mô hình ước lượng."""
         invariance_path = PROJECT_ROOT / "results" / "tables" / "table7_measurement_invariance.csv"
         if not invariance_path.exists():
             self.skipTest("Table 7 not yet generated")
@@ -164,7 +164,7 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
             self.assertGreaterEqual(df, 1.0, f"Degrees of freedom must be >= 1 for {r['model_level']}")
 
     def test_10_r_squared_interval_bounds(self):
-        """Boundary Case: Enforce R² in [0.0, 1.0] for all models."""
+        """Trường hợp biên: Bắt buộc hệ số R² nằm trong đoạn [0.0, 1.0] cho mọi mô hình."""
         table5_path = PROJECT_ROOT / "results" / "tables" / "table5_pooled_sem.csv"
         if not table5_path.exists():
             self.skipTest("Table 5 not yet generated")
@@ -176,7 +176,7 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
             self.assertLessEqual(r2, 1.0, f"R² > 1.0 in {r['path_label']}: {r2}")
 
     def test_11_full_scale_endpoint_representation(self):
-        """Corner Case: Extreme response values (1 and 5) must be present in the full dataset."""
+        """Trường hợp đặc biệt: Cả hai đầu mút thang đo (1 và 5) đều phải xuất hiện trong tập dữ liệu đầy đủ."""
         rows = self._load_data_if_available()
         constructs = ["NORM", "AWARE", "KNOW", "COMM", "ATT", "RESP"]
         cols = [f"{c}{i}" for c in constructs for i in range(1, 5)]
@@ -186,7 +186,7 @@ class TestTier2BoundariesAndCornerCases(unittest.TestCase):
             self.assertIn(5.0, values, f"Endpoint value 5.0 missing for {col} (distribution truncated)")
 
     def test_12_country_allocation_exact_partition(self):
-        """Boundary Case: Subsample counts sum exactly to 1,017 without unrecognized country tags."""
+        """Trường hợp biên: Số lượng quan sát các nhóm con cộng lại đúng bằng 1.017 và không có mã quốc gia lạ."""
         rows = self._load_data_if_available()
         counts = {}
         for r in rows:

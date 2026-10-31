@@ -1,19 +1,19 @@
 """
 03_multigroup_sem_invariance.py
 
-Multigroup Structural Equation Modeling (SEM) & Measurement Invariance.
-Target Reference: Petrič, G., & Just, J. N. (2025). Information security culture and
+Mô hình phương trình cấu trúc đa nhóm (Multigroup SEM) & Kiểm định tính bất biến đo lường.
+Tài liệu tham khảo gốc: Petrič, G., & Just, J. N. (2025). Information security culture and
 phishing-reporting model: structural equivalence across Germany, UK, and USA.
 Journal of Cybersecurity, 11(1), tyaf011.
 
-Outputs generated:
-1. results/tables/table5_pooled_sem.csv (Pooled SEM, 15 structural paths, N=1,017)
-2. results/tables/table5_sem_fit_indices.csv (Pooled SEM fit indices)
-3. results/tables/table6_multigroup_sem.csv (Wide multigroup SEM comparison table)
-4. results/tables/table6_multigroup_sem_long.csv (Tidy 45-row multigroup SEM table)
-5. results/tables/table6_cross_group_tests.csv (Formal pairwise z-tests and Wald tests)
-6. results/tables/table7_measurement_invariance.csv (Configural, Metric, Scalar)
-7. results/logs/03_multigroup_sem_invariance.log (Execution log)
+Các tệp kết quả được xuất ra:
+1. results/tables/table5_pooled_sem.csv (Mô hình SEM mẫu gộp, 15 đường dẫn cấu trúc, N=1.017)
+2. results/tables/table5_sem_fit_indices.csv (Các chỉ số độ phù hợp của SEM mẫu gộp)
+3. results/tables/table6_multigroup_sem.csv (Bảng so sánh SEM đa nhóm định dạng rộng)
+4. results/tables/table6_multigroup_sem_long.csv (Bảng SEM đa nhóm định dạng chuẩn hóa 45 dòng)
+5. results/tables/table6_cross_group_tests.csv (Kiểm định z từng cặp và kiểm định Wald liên nhóm)
+6. results/tables/table7_measurement_invariance.csv (Bất biến cấu hình, hệ số tải, hệ số chặn)
+7. results/logs/03_multigroup_sem_invariance.log (Nhật ký thực thi)
 """
 
 import sys
@@ -37,7 +37,7 @@ import semopy
 from semopy import Model, calc_stats
 
 # -----------------------------------------------------------------------------
-# PATH CONFIGURATION
+# CẤU HÌNH ĐƯỜNG DẪN
 # -----------------------------------------------------------------------------
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
@@ -56,7 +56,7 @@ LOG_FILE = LOGS_DIR / "03_multigroup_sem_invariance.log"
 CONSTRUCTS = ["NORM", "AWARE", "KNOW", "COMM", "ATT", "RESP"]
 INDICATORS = [f"{c}{i}" for c in CONSTRUCTS for i in range(1, 5)]
 
-# Structural path specifications: (outcome, predictor, path_label, path_equation)
+# Đặc tả các đường dẫn cấu trúc: (biến phụ thuộc, biến dự báo, nhãn giả thuyết, phương trình đường dẫn)
 STRUCTURAL_PATHS = [
     ("ATT", "NORM", "H1a", "NORM -> ATT"),
     ("ATT", "AWARE", "H2a", "AWARE -> ATT"),
@@ -75,7 +75,7 @@ STRUCTURAL_PATHS = [
     ("REPORT", "COMM_TOOL", "H7b", "COMM_TOOL -> REPORT"),
 ]
 
-# Published benchmark path coefficients from Petrič & Just (2025) Table 6
+# Hệ số đường dẫn chuẩn hóa đã công bố từ Bảng 6 của Petrič & Just (2025)
 PAPER_BENCHMARKS = {
     "H1a": {"DE": "+0.46***", "UK": "+0.23***", "US": "+0.43***"},
     "H2a": {"DE": "+0.38***", "UK": "+0.48***", "US": "+0.36***"},
@@ -118,7 +118,7 @@ RESP =~ RESP1 + RESP2 + RESP3 + RESP4
 
 
 def setup_logger() -> logging.Logger:
-    """Configures multi-channel logger writing to console and log file."""
+    """Cấu hình bộ ghi log đa kênh xuất đồng thời ra console và tệp log."""
     LOGS_DIR.mkdir(parents=True, exist_ok=True)
     TABLES_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -144,7 +144,7 @@ def setup_logger() -> logging.Logger:
 
 
 def compute_exact_srmr(model: Model) -> float:
-    """Computes exact SRMR from sample covariance and model-implied covariance."""
+    """Tính chỉ số SRMR chính xác từ ma trận hiệp phương sai mẫu và ma trận hiệp phương sai hàm ý của mô hình."""
     sigma, _ = model.calc_sigma()
     s = model.mx_cov
     p = s.shape[0]
@@ -161,19 +161,19 @@ def compute_exact_srmr(model: Model) -> float:
 
 
 # -----------------------------------------------------------------------------
-# TABLE 5: POOLED BASELINE SEM
+# BẢNG 5: MÔ HÌNH SEM CƠ SỞ TRÊN MẪU GỘP (POOLED BASELINE SEM)
 # -----------------------------------------------------------------------------
 def estimate_pooled_sem(
     df: pd.DataFrame, logger: logging.Logger
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Estimates full latent SEM with COMM_TOOL interaction on pooled sample (N=1,017).
-    Exports Table 5 structural regression paths and fit indices.
+    Ước lượng mô hình SEM biến tiềm ẩn đầy đủ có thành phần tương tác COMM_TOOL trên mẫu gộp (N=1.017).
+    Xuất các đường dẫn hồi quy cấu trúc và chỉ số độ phù hợp cho Bảng 5.
     """
     logger.info("--- ESTIMATING POOLED BASELINE SEM (TABLE 5) ---")
     pooled_df = df.copy()
 
-    # Feature engineering for pooled interaction: sample-wide mean centering
+    # Tạo biến tương tác cho mẫu gộp: chuẩn hóa tâm (mean-centering) trên toàn bộ mẫu
     comm_mean = pooled_df[[f"COMM{i}" for i in range(1, 5)]].mean(axis=1)
     comm_c = comm_mean - comm_mean.mean()
     tool_c = pooled_df["TOOL"] - pooled_df["TOOL"].mean()
@@ -187,7 +187,7 @@ def estimate_pooled_sem(
     reg_rows = insp[insp["op"] == "~"]
     var_rows = insp[insp["op"] == "~~"]
 
-    # Calculate R-squared for endogenous variables: R² = 1.0 - Var_std(error)
+    # Tính hệ số xác định R-squared cho các biến nội sinh: R² = 1.0 - Var_std(sai số)
     r_squared_map: Dict[str, float] = {}
     for endo in ["ATT", "RESP", "REPORT"]:
         err_var_row = var_rows[(var_rows["lval"] == endo) & (var_rows["rval"] == endo)]
@@ -201,7 +201,7 @@ def estimate_pooled_sem(
     logger.info("Endogenous R²: ATT=%.4f, RESP=%.4f, REPORT=%.4f",
                 r_squared_map["ATT"], r_squared_map["RESP"], r_squared_map["REPORT"])
 
-    # Build Table 5 rows
+    # Xây dựng các dòng kết quả cho Bảng 5
     t5_rows: List[Dict[str, Any]] = []
     for outcome, predictor, path_label, path_equation in STRUCTURAL_PATHS:
         match = reg_rows[(reg_rows["lval"] == outcome) & (reg_rows["rval"] == predictor)]
@@ -237,7 +237,7 @@ def estimate_pooled_sem(
 
     df_table5 = pd.DataFrame(t5_rows)
 
-    # Compute fit indices
+    # Tính các chỉ số độ phù hợp của mô hình
     st = calc_stats(model)
     srmr_val = compute_exact_srmr(model)
     fit_rows = [{
@@ -259,18 +259,18 @@ def estimate_pooled_sem(
 
 
 # -----------------------------------------------------------------------------
-# TABLE 6: MULTIGROUP COUNTRY SEM & FORMAL CROSS-GROUP TESTS
+# BẢNG 6: MÔ HÌNH SEM ĐA NHÓM THEO QUỐC GIA & KIỂM ĐỊNH SO SÁNH LIÊN NHÓM
 # -----------------------------------------------------------------------------
 def estimate_multigroup_sem_and_tests(
     df: pd.DataFrame, logger: logging.Logger
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
-    Estimates country-specific SEM across Germany (n=306), UK (n=205), USA (n=506),
-    enforcing within-country mean-centering for COMM_TOOL.
-    Produces:
-    - Table 6 wide format (15 rows)
-    - Table 6 long format (45 rows)
-    - Table 6 cross-group tests (15 rows with pairwise z-tests and Wald tests)
+    Ước lượng mô hình SEM riêng cho từng quốc gia gồm Đức (n=306), Anh (n=205), Mỹ (n=506),
+    áp dụng chuẩn hóa tâm trong phạm vi từng quốc gia cho biến tương tác COMM_TOOL.
+    Xuất ra:
+    - Bảng 6 định dạng rộng (15 dòng)
+    - Bảng 6 định dạng dài chuẩn hóa (45 dòng)
+    - Bảng 6 kiểm định liên nhóm (15 dòng với kiểm định z từng cặp và kiểm định Wald)
     """
     logger.info("--- ESTIMATING COUNTRY-SPECIFIC MULTIGROUP SEM (TABLE 6) ---")
     groups = ["DE", "UK", "US"]
@@ -283,7 +283,7 @@ def estimate_multigroup_sem_and_tests(
         c_name = country_names[g]
         gdf = df[df["country"] == g].copy()
 
-        # Within-country mean centering for COMM_TOOL
+        # Chuẩn hóa tâm trong phạm vi từng quốc gia cho biến tương tác COMM_TOOL
         c_comm_mean = gdf[[f"COMM{i}" for i in range(1, 5)]].mean(axis=1)
         c_comm_c = c_comm_mean - c_comm_mean.mean()
         c_tool_c = gdf["TOOL"] - gdf["TOOL"].mean()
@@ -297,7 +297,7 @@ def estimate_multigroup_sem_and_tests(
         reg_rows = insp[insp["op"] == "~"]
         var_rows = insp[insp["op"] == "~~"]
 
-        # R2 calculation per country
+        # Tính R² cho từng quốc gia
         c_r2: Dict[str, float] = {}
         for endo in ["ATT", "RESP", "REPORT"]:
             err_var_row = var_rows[(var_rows["lval"] == endo) & (var_rows["rval"] == endo)]
@@ -354,7 +354,7 @@ def estimate_multigroup_sem_and_tests(
 
     df_table6_long = pd.DataFrame(long_rows)
 
-    # Build Table 6 wide format (15 rows)
+    # Xây dựng Bảng 6 ở định dạng rộng (15 dòng)
     wide_rows: List[Dict[str, Any]] = []
     cross_test_rows: List[Dict[str, Any]] = []
 
@@ -363,12 +363,12 @@ def estimate_multigroup_sem_and_tests(
         uk_res = country_results["UK"][path_label]
         us_res = country_results["US"][path_label]
 
-        # Standardized coefficients (matching published paper conventions)
+        # Hệ số chuẩn hóa (khớp với quy ước trình bày của bài báo gốc)
         de_b_std, de_se, de_p = de_res["std_beta"], de_res["std_error"], de_res["p_value"]
         uk_b_std, uk_se, uk_p = uk_res["std_beta"], uk_res["std_error"], uk_res["p_value"]
         us_b_std, us_se, us_p = us_res["std_beta"], us_res["std_error"], us_res["p_value"]
 
-        # Unstandardized slopes (for explicit distinction and dimensional consistency)
+        # Hệ số góc chưa chuẩn hóa (để phân biệt tường minh và đảm bảo nhất quán đơn vị đo)
         de_b_unstd = de_res["unstd_beta"]
         uk_b_unstd = uk_res["unstd_beta"]
         us_b_unstd = us_res["unstd_beta"]
@@ -395,8 +395,8 @@ def estimate_multigroup_sem_and_tests(
             "paper_usa_beta": PAPER_BENCHMARKS[path_label]["US"],
         })
 
-        # Formal Cross-Group Tests using Unstandardized Parameters (B and SE(B))
-        # 1. Pairwise z-tests between independent national samples:
+        # Kiểm định liên nhóm chính thức sử dụng tham số chưa chuẩn hóa (B và SE(B))
+        # 1. Kiểm định z từng cặp giữa các mẫu quốc gia độc lập:
         # SE_diff = sqrt(SE_A^2 + SE_B^2), z = (B_A - B_B) / SE_diff
         diff_de_uk = de_b_unstd - uk_b_unstd
         se_de_uk = math.sqrt(de_se**2 + uk_se**2)
@@ -413,14 +413,14 @@ def estimate_multigroup_sem_and_tests(
         z_uk_us = diff_uk_us / se_uk_us
         p_uk_us = 2.0 * (1.0 - norm.cdf(abs(z_uk_us)))
 
-        # 2. 3-group precision-weighted omnibus Wald test (df=2)
+        # 2. Kiểm định Wald tổng hợp 3 nhóm có trọng số theo độ chính xác (df=2)
         weights = [1.0 / (de_se**2), 1.0 / (uk_se**2), 1.0 / (us_se**2)]
         b_unstd_list = [de_b_unstd, uk_b_unstd, us_b_unstd]
         b_bar = sum(w * b for w, b in zip(weights, b_unstd_list)) / sum(weights)
         wald_stat = sum(w * ((b - b_bar)**2) for w, b in zip(weights, b_unstd_list))
         wald_p = 1.0 - chi2.cdf(wald_stat, df=2)
 
-        # 3. Classification guardrail enforcing Requirement R4
+        # 3. Quy tắc phân loại đảm bảo yêu cầu kiểm định chính thức
         diff_asserted_list = []
         if p_de_uk < 0.05:
             diff_asserted_list.append("DE vs UK")
@@ -467,19 +467,19 @@ def estimate_multigroup_sem_and_tests(
 
 
 # -----------------------------------------------------------------------------
-# TABLE 7: MEASUREMENT INVARIANCE HIERARCHY
+# BẢNG 7: PHÂN CẤP TÍNH BẤT BIẾN ĐO LƯỜNG (MEASUREMENT INVARIANCE HIERARCHY)
 # -----------------------------------------------------------------------------
 def evaluate_measurement_invariance(
     df: pd.DataFrame, logger: logging.Logger
 ) -> pd.DataFrame:
     """
-    Evaluates Configural, Metric, and Scalar Invariance models across countries.
-    Implements multi-sample pooling and joint Wishart ML solver in SciPy.
+    Đánh giá các mô hình bất biến cấu hình (Configural), hệ số tải (Metric) và hệ số chặn (Scalar) giữa các quốc gia.
+    Triển khai gộp đa mẫu và bộ giải cực đại hợp lý Wishart đồng thời (joint Wishart ML) bằng SciPy.
     """
     logger.info("--- EVALUATING MEASUREMENT INVARIANCE (TABLE 7) ---")
     groups = ["DE", "UK", "US"]
-    p = len(INDICATORS)  # 24
-    k = len(CONSTRUCTS)  # 6
+    p = len(INDICATORS)  # 24 biến chỉ báo
+    k = len(CONSTRUCTS)  # 6 khái niệm tiềm ẩn
 
     s_g = {g: df[df["country"] == g][INDICATORS].cov().values for g in groups}
     y_bar_g = {g: df[df["country"] == g][INDICATORS].mean().values for g in groups}
@@ -495,7 +495,7 @@ def evaluate_measurement_invariance(
         for g in groups
     }
 
-    # Baseline independence model across 3 groups (df = 276 * 3 = 828)
+    # Mô hình độc lập cơ sở (baseline independence) trên 3 nhóm (df = 276 * 3 = 828)
     df_base_total = 276 * 3
     chi2_base_total = 0.0
     for g in groups:
@@ -504,9 +504,9 @@ def evaluate_measurement_invariance(
         chi2_base_total += f_base
     logger.info("Baseline null model: chi2=%.4f, df=%d", chi2_base_total, df_base_total)
 
-    # 1. Configural Invariance: Fit individual CFAs per country and pool statistics
+    # 1. Bất biến cấu hình (Configural Invariance): Ước lượng CFA riêng từng quốc gia và gộp thống kê
     config_chi2 = 0.0
-    config_df = 237 * 3  # 711
+    config_df = 237 * 3  # 711 bậc tự do
     config_srmr_sq_weighted = 0.0
 
     for g in groups:
@@ -527,7 +527,7 @@ def evaluate_measurement_invariance(
     logger.info("Configural Model: chi2=%.4f, df=%d, cfi=%.4f, rmsea=%.4f, srmr=%.4f",
                 config_chi2, config_df, config_cfi, config_rmsea, config_srmr)
 
-    # 2. Metric Invariance: Shared Lambda across groups (df = 747, Delta df = 36)
+    # 2. Bất biến hệ số tải (Metric Invariance): Ràng buộc ma trận Lambda bằng nhau giữa các nhóm (df = 747, Delta df = 36)
     def unpack_metric(params: np.ndarray):
         lam = np.zeros((p, k))
         for idx, (r, c) in enumerate(marker_idx):
@@ -581,7 +581,7 @@ def evaluate_measurement_invariance(
     metric_tli = min(1.0, ((chi2_base_total / df_base_total) - (metric_chi2 / metric_df)) / ((chi2_base_total / df_base_total) - 1.0))
     metric_rmsea = math.sqrt(max((metric_chi2 - metric_df) / (metric_df * (n_total - 3)), 0.0))
 
-    # Metric SRMR
+    # Tính SRMR cho mô hình Metric
     _, sigmas_metric = unpack_metric(res_metric.x)
     metric_srmr_sq_weighted = 0.0
     tril_p = np.tril_indices(p, k=0)
@@ -598,7 +598,7 @@ def evaluate_measurement_invariance(
     logger.info("Metric Model: chi2=%.4f, df=%d, cfi=%.4f, rmsea=%.4f, srmr=%.4f",
                 metric_chi2, metric_df, metric_cfi, metric_rmsea, metric_srmr)
 
-    # 3. Scalar Invariance: Shared Lambda and Intercepts tau (df = 783, Delta df = 36)
+    # 3. Bất biến chặn (Scalar Invariance): Ràng buộc chung cả Lambda và hệ số chặn tau (df = 783, Delta df = 36)
     def unpack_scalar(params: np.ndarray):
         lam = np.zeros((p, k))
         for idx, (r, c) in enumerate(marker_idx):
@@ -666,7 +666,7 @@ def evaluate_measurement_invariance(
     scalar_tli = min(1.0, ((chi2_base_total / df_base_total) - (scalar_chi2 / scalar_df)) / ((chi2_base_total / df_base_total) - 1.0))
     scalar_rmsea = math.sqrt(max((scalar_chi2 - scalar_df) / (scalar_df * (n_total - 3)), 0.0))
 
-    # Scalar SRMR
+    # Tính SRMR cho mô hình Scalar
     _, sigmas_scalar, _ = unpack_scalar(res_scalar.x)
     scalar_srmr_sq_weighted = 0.0
     for g in groups:
@@ -682,8 +682,8 @@ def evaluate_measurement_invariance(
     logger.info("Scalar Model: chi2=%.4f, df=%d, cfi=%.4f, rmsea=%.4f, srmr=%.4f",
                 scalar_chi2, scalar_df, scalar_cfi, scalar_rmsea, scalar_srmr)
 
-    # Fit Deltas
-    # Metric vs Configural
+    # Độ chênh lệch các chỉ số độ phù hợp (Fit Deltas)
+    # So sánh Metric với Configural
     d_chi2_metric = metric_chi2 - config_chi2
     d_df_metric = metric_df - config_df
     d_p_metric = 1.0 - chi2.cdf(d_chi2_metric, d_df_metric)
@@ -691,7 +691,7 @@ def evaluate_measurement_invariance(
     d_rmsea_metric = metric_rmsea - config_rmsea
     d_srmr_metric = metric_srmr - config_srmr
 
-    # Scalar vs Metric
+    # So sánh Scalar với Metric
     d_chi2_scalar = scalar_chi2 - metric_chi2
     d_df_scalar = scalar_df - metric_df
     d_p_scalar = 1.0 - chi2.cdf(d_chi2_scalar, d_df_scalar)
@@ -772,7 +772,7 @@ def evaluate_measurement_invariance(
 
 
 # -----------------------------------------------------------------------------
-# MAIN PIPELINE EXECUTION
+# THỰC THI PIPELINE CHÍNH
 # -----------------------------------------------------------------------------
 def main() -> None:
     parser = argparse.ArgumentParser(description="Estimate multigroup SEM and measurement invariance.")
@@ -796,14 +796,14 @@ def main() -> None:
     logger.info("Sample distribution: DE=%d, UK=%d, US=%d",
                 country_counts.get("DE", 0), country_counts.get("UK", 0), country_counts.get("US", 0))
 
-    # 1. Estimate Table 5: Pooled Baseline SEM
+    # 1. Ước lượng Bảng 5: Mô hình SEM cơ sở trên mẫu gộp
     df_table5, df_table5_fit = estimate_pooled_sem(df, logger)
     df_table5.to_csv(TABLE5_PATH, index=False, encoding="utf-8")
     df_table5_fit.to_csv(TABLE5_FIT_PATH, index=False, encoding="utf-8")
     logger.info("[SAVED] Table 5 Pooled SEM -> %s (%d rows)", TABLE5_PATH, len(df_table5))
     logger.info("[SAVED] Table 5 Fit Indices -> %s", TABLE5_FIT_PATH)
 
-    # 2. Estimate Table 6: Multigroup Country SEM & Cross-Group Tests
+    # 2. Ước lượng Bảng 6: Mô hình SEM đa nhóm theo quốc gia & kiểm định liên nhóm
     df_table6, df_table6_long, df_table6_tests = estimate_multigroup_sem_and_tests(df, logger)
     df_table6.to_csv(TABLE6_PATH, index=False, encoding="utf-8")
     df_table6_long.to_csv(TABLE6_LONG_PATH, index=False, encoding="utf-8")
@@ -812,12 +812,12 @@ def main() -> None:
     logger.info("[SAVED] Table 6 Multigroup SEM (Long) -> %s (%d rows)", TABLE6_LONG_PATH, len(df_table6_long))
     logger.info("[SAVED] Table 6 Cross-Group Tests -> %s (%d rows)", TABLE6_TESTS_PATH, len(df_table6_tests))
 
-    # 3. Evaluate Table 7: Measurement Invariance Hierarchy
+    # 3. Đánh giá Bảng 7: Phân cấp bất biến đo lường
     df_table7 = evaluate_measurement_invariance(df, logger)
     df_table7.to_csv(TABLE7_PATH, index=False, encoding="utf-8")
     logger.info("[SAVED] Table 7 Measurement Invariance -> %s (%d rows)", TABLE7_PATH, len(df_table7))
 
-    # 4. Rigorous Post-Execution Quality Assertions
+    # 4. Kiểm tra chất lượng nghiêm ngặt sau khi thực thi
     logger.info("--- RUNNING INTEGRITY & CONTRACT VALIDATION CHECKS ---")
     assert len(df_table5) == 15, f"Table 5 must have 15 paths, found {len(df_table5)}"
     for idx, r in df_table5.iterrows():
@@ -828,16 +828,16 @@ def main() -> None:
     assert len(df_table6) == 15, f"Table 6 wide must have 15 paths, found {len(df_table6)}"
     assert len(df_table6_long) == 45, f"Table 6 long must have 45 rows, found {len(df_table6_long)}"
 
-    # Check key literature benchmarks in Table 6
+    # Đối chiếu các mốc chuẩn quan trọng từ bài báo gốc trong Bảng 6
     h1a = df_table6[df_table6["path_label"] == "H1a"].iloc[0]
     h3a = df_table6[df_table6["path_label"] == "H3a"].iloc[0]
     assert float(h1a["germany_beta"]) > 0.0 and float(h1a["germany_p"]) < 0.05, "H1a in Germany must be positive & significant"
     assert float(h3a["germany_beta"]) < 0.0, "H3a in Germany must be negative"
 
-    # Table 7 Measurement Invariance: exactly 3 canonical models (Configural, Metric, Scalar)
+    # Bảng 7 Bất biến đo lường: đúng 3 cấp độ mô hình chuẩn (Configural, Metric, Scalar)
     assert len(df_table7) == 3, f"Table 7 must have 3 rows, found {len(df_table7)}"
 
-    # Invariance degrees of freedom strictly increasing
+    # Bậc tự do của các mô hình bất biến phải tăng ngặt
     dfs = [float(r["df"]) for _, r in df_table7.iterrows()]
     for i in range(1, len(dfs)):
         assert dfs[i] > dfs[i - 1], f"Table 7 df must strictly increase: {dfs}"
@@ -845,7 +845,7 @@ def main() -> None:
     metric_row = df_table7[df_table7["model_level"].str.contains("Metric", case=False)].iloc[0]
     assert abs(float(metric_row["delta_cfi"])) <= 0.010, f"Metric delta CFI exceeds cutoff: {metric_row['delta_cfi']}"
 
-    # Verify Table 6 cross-group tests integrity
+    # Xác minh tính toàn vẹn của bảng kiểm định liên nhóm Bảng 6
     assert len(df_table6_tests) == 15, f"Table 6 cross-group tests must have 15 rows, found {len(df_table6_tests)}"
     sig_paths = df_table6_tests[df_table6_tests["group_difference_asserted"].str.contains("YES")]
     assert len(sig_paths) >= 2, f"Expected at least 2 significant paths (H5, H7b), found {len(sig_paths)}"

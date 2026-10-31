@@ -1,22 +1,22 @@
-[2026-10-30 18:08:53] [INFO] ================================================================================
-[2026-10-30 18:08:53] [INFO] NON-MISREPRESENTATION NOTICE:
-[2026-10-30 18:08:53] [INFO] This pipeline generates SYNTHETIC, SIMULATED data parameterized from published
-[2026-10-30 18:08:53] [INFO] benchmarks in Petrič & Just (2025). It DOES NOT contain real respondent data.
-[2026-10-30 18:08:53] [INFO] ================================================================================
-[2026-10-30 18:08:53] [INFO] START: Multigroup Synthetic Data Generation
-[2026-10-30 18:08:53] [INFO] Random Seed     : 20261029
-[2026-10-30 18:08:53] [INFO] Target CSV      : D:\Download\DT092_Phishing_Culture\data\synthetic_multigroup.csv
-[2026-10-30 18:08:53] [INFO] Target Manifest : D:\Download\DT092_Phishing_Culture\data\data_manifest.json
-[2026-10-30 18:08:53] [INFO] Repository Root : D:\Download\DT092_Phishing_Culture
-[2026-10-30 18:08:53] [INFO] ================================================================================
-[2026-10-30 18:08:53] [INFO] Simulating synthetic multigroup data (N=1017) with seed 20261029...
-[2026-10-30 18:08:53] [INFO] Wrote dataset to CSV: D:\Download\DT092_Phishing_Culture\data\synthetic_multigroup.csv (1017 rows, 28 columns)
-[2026-10-30 18:08:53] [INFO] Running technical verification checks on generated dataset...
-[2026-10-30 18:08:53] [INFO] [PASS] All 9 technical verification checks passed successfully.
-[2026-10-30 18:08:53] [INFO] Wrote data manifest JSON: D:\Download\DT092_Phishing_Culture\data\data_manifest.json
-[2026-10-30 18:08:53] [INFO] Wrote companion disclosure notice: D:\Download\DT092_Phishing_Culture\data\DATASET_DECLARATION.md
-[2026-10-30 18:08:53] [INFO] ================================================================================
-[2026-10-30 18:08:53] [INFO] [SUCCESS] Multigroup dataset generation complete.
-[2026-10-30 18:08:53] [INFO]   - Output CSV SHA-256 : 52c161dcd96ff568228e74c9c6517f2c2423f4bb2bee0860b511912d4aae5cbe
-[2026-10-30 18:08:53] [INFO]   - Subsample Breakdown : Germany=306, UK=205, USA=506
-[2026-10-30 18:08:53] [INFO] ================================================================================
+[2026-10-30 19:09:09] [INFO] ================================================================================
+[2026-10-30 19:09:09] [INFO] NON-MISREPRESENTATION NOTICE:
+[2026-10-30 19:09:09] [INFO] This pipeline generates SYNTHETIC, SIMULATED data parameterized from published
+[2026-10-30 19:09:09] [INFO] benchmarks in Petrič & Just (2025). It DOES NOT contain real respondent data.
+[2026-10-30 19:09:09] [INFO] ================================================================================
+[2026-10-30 19:09:09] [INFO] START: Multigroup Synthetic Data Generation
+[2026-10-30 19:09:09] [INFO] Random Seed     : 20261029
+[2026-10-30 19:09:09] [INFO] Target CSV      : D:\Download\DT092_Phishing_Culture\data\synthetic_multigroup.csv
+[2026-10-30 19:09:09] [INFO] Target Manifest : D:\Download\DT092_Phishing_Culture\data\data_manifest.json
+[2026-10-30 19:09:09] [INFO] Repository Root : D:\Download\DT092_Phishing_Culture
+[2026-10-30 19:09:09] [INFO] ================================================================================
+[2026-10-30 19:09:09] [INFO] Simulating synthetic multigroup data (N=1017) with seed 20261029...
+[2026-10-30 19:09:09] [INFO] Wrote dataset to CSV: D:\Download\DT092_Phishing_Culture\data\synthetic_multigroup.csv (1017 rows, 28 columns)
+[2026-10-30 19:09:09] [INFO] Running technical verification checks on generated dataset...
+[2026-10-30 19:09:09] [INFO] [PASS] All 9 technical verification checks passed successfully.
+[2026-10-30 19:09:09] [INFO] Wrote data manifest JSON: D:\Download\DT092_Phishing_Culture\data\data_manifest.json
+[2026-10-30 19:09:09] [INFO] Wrote companion disclosure notice: D:\Download\DT092_Phishing_Culture\data\DATASET_DECLARATION.md
+[2026-10-30 19:09:09] [INFO] ================================================================================
+[2026-10-30 19:09:09] [INFO] [SUCCESS] Multigroup dataset generation complete.
+[2026-10-30 19:09:09] [INFO]   - Output CSV SHA-256 : 52c161dcd96ff568228e74c9c6517f2c2423f4bb2bee0860b511912d4aae5cbe
+[2026-10-30 19:09:09] [INFO]   - Subsample Breakdown : Germany=306, UK=205, USA=506
+[2026-10-30 19:09:09] [INFO] ================================================================================

@@ -1,18 +1,18 @@
 """
 ================================================================================
-FILE: scripts/02_cfa_and_descriptives.py
-PURPOSE:
-  - Generate descriptive statistics, country summaries, correlation matrices,
-    and confirmatory factor analysis (CFA) measurement model deliverables for
-    the DT092 Multigroup SEM Replication (Petrič & Just, 2025).
-  - Deliverables:
-    1. Table 1 Demographics: results/tables/table1_demographics.csv
-    2. Table 1 Country Summary: results/tables/table1_country_summary.csv
-    3. Table 2 CFA Measurement: results/tables/table2_cfa_measurement.csv
-    4. Table 2 CFA Fit Indices: results/tables/table2_cfa_fit_indices.csv
-    5. Table 3 Correlations: results/tables/table3_correlations.csv
-    6. Table 4 Descriptives: results/tables/table4_descriptives.csv
-    7. Execution Log: results/logs/02_cfa_and_descriptives.log
+TỆP: scripts/02_cfa_and_descriptives.py
+MỤC ĐÍCH:
+  - Tạo thống kê mô tả, bảng tóm tắt theo quốc gia, ma trận tương quan và
+    mô hình đo lường phân tích nhân tố khẳng định (CFA) cho thí nghiệm tái tạo
+    SEM đa nhóm DT092 (Petrič & Just, 2025).
+  - Các kết quả đầu ra:
+    1. Bảng 1 Thống kê mẫu: results/tables/table1_demographics.csv
+    2. Bảng 1 Tóm tắt theo quốc gia: results/tables/table1_country_summary.csv
+    3. Bảng 2 Mô hình đo lường CFA: results/tables/table2_cfa_measurement.csv
+    4. Bảng 2 Chỉ số phù hợp CFA: results/tables/table2_cfa_fit_indices.csv
+    5. Bảng 3 Ma trận tương quan: results/tables/table3_correlations.csv
+    6. Bảng 4 Thống kê mô tả: results/tables/table4_descriptives.csv
+    7. Nhật ký thực thi: results/logs/02_cfa_and_descriptives.log
 ================================================================================
 """
 
@@ -29,13 +29,13 @@ from scipy.stats import kurtosis, norm, skew
 import semopy
 from semopy import Model, calc_stats
 
-# Reconfigure console output for UTF-8 on Windows
+# Cấu hình lại đầu ra console sang UTF-8 trên Windows
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
-# Constants
+# Các hằng số cấu hình
 CANONICAL_CONSTRUCTS = ["NORM", "AWARE", "KNOW", "COMM", "ATT", "RESP"]
 VARIABLES_ORDER = ["REPORT", "ATT", "RESP", "KNOW", "COMM", "NORM", "AWARE", "TOOL"]
 GROUPS = [("POOLED", None), ("DE", "DE"), ("UK", "UK"), ("US", "US")]
@@ -51,7 +51,7 @@ RESP =~ RESP1 + RESP2 + RESP3 + RESP4
 
 
 def setup_logging(log_file: Optional[Path] = None, verbose: bool = False) -> logging.Logger:
-    """Configure unified logging for console and file."""
+    """Cấu hình ghi log thống nhất cho cả console và tệp tin."""
     logger = logging.getLogger("cfa_and_descriptives")
     logger.setLevel(logging.DEBUG if verbose else logging.INFO)
     logger.propagate = False
@@ -78,8 +78,8 @@ def setup_logging(log_file: Optional[Path] = None, verbose: bool = False) -> log
 
 def compute_composite_scores(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Compute unweighted composite mean scores for the 6 latent constructs.
-    Single-item indicators (TOOL and REPORT) are preserved as-is.
+    Tính điểm trung bình tổ hợp không trọng số cho 6 khái niệm tiềm ẩn.
+    Các biến chỉ báo đơn mục (TOOL và REPORT) được giữ nguyên giá trị gốc.
     """
     df_calc = df.copy()
     for c in CANONICAL_CONSTRUCTS:
@@ -90,12 +90,12 @@ def compute_composite_scores(df: pd.DataFrame) -> pd.DataFrame:
 
 def build_table1_demographics(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Build Table 1 Demographics following the canonical 10-column schema
-    required by spec.md and test_tier1_feature_coverage.py:
+    Xây dựng Bảng 1 Thống kê mẫu theo lược đồ chuẩn 10 cột
+    được yêu cầu bởi đặc tả và test_tier1_feature_coverage.py:
     variable_category,subcategory,pooled_n,pooled_pct,germany_n,germany_pct,uk_n,uk_pct,usa_n,usa_pct
 
-    Also produces companion table1_country_summary.csv with tool prevalence
-    and REPORT statistics per country.
+    Đồng thời tạo bảng bổ trợ table1_country_summary.csv chứa tỷ lệ có công cụ báo cáo
+    và thống kê biến REPORT theo từng quốc gia.
     """
     n_total = len(df)
     n_de = int((df["country"] == "DE").sum())
@@ -104,7 +104,7 @@ def build_table1_demographics(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFr
 
     rows: List[Dict[str, Any]] = []
 
-    # 1. Sample Size category
+    # 1. Nhóm quy mô mẫu (Sample Size)
     rows.append({
         "variable_category": "Sample Size",
         "subcategory": "Total Respondents",
@@ -118,7 +118,7 @@ def build_table1_demographics(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFr
         "usa_pct": round(n_us / n_total * 100, 2),
     })
 
-    # 2. Reporting Tool Availability category
+    # 2. Nhóm mức độ sẵn có công cụ báo cáo (Reporting Tool Availability)
     for t_val, t_lbl in [(1, "Tool Available (TOOL=1)"), (0, "Tool Absent (TOOL=0)")]:
         p_n = int((df["TOOL"] == t_val).sum())
         de_n = int(((df["country"] == "DE") & (df["TOOL"] == t_val)).sum())
@@ -137,7 +137,7 @@ def build_table1_demographics(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFr
             "usa_pct": round(us_n / n_us * 100, 2),
         })
 
-    # 3. Reporting Behavior category (Likert ratings 1 to 5)
+    # 3. Nhóm hành vi báo cáo (Reporting Behavior - thang đo Likert từ 1 đến 5)
     report_labels = {
         1: "1 - Never",
         2: "2 - Rarely",
@@ -165,7 +165,7 @@ def build_table1_demographics(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFr
 
     df_canon = pd.DataFrame(rows)
 
-    # Companion summary table
+    # Bảng tóm tắt bổ trợ theo quốc gia
     summary_rows: List[Dict[str, Any]] = []
     for c_code, c_name in [
         ("DE", "Germany (DE)"),
@@ -191,9 +191,9 @@ def build_table1_demographics(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFr
 
 def build_table4_descriptives(df_calc: pd.DataFrame) -> pd.DataFrame:
     """
-    Build Table 4 Descriptive Statistics across 4 groups (POOLED, DE, UK, US)
-    and 8 variables (REPORT, ATT, RESP, KNOW, COMM, NORM, AWARE, TOOL).
-    Schema: group,variable,mean,sd,scale_min,scale_max,skewness,kurtosis
+    Xây dựng Bảng 4 Thống kê mô tả trên 4 nhóm (POOLED, DE, UK, US)
+    và 8 biến nghiên cứu (REPORT, ATT, RESP, KNOW, COMM, NORM, AWARE, TOOL).
+    Lược đồ cột: group,variable,mean,sd,scale_min,scale_max,skewness,kurtosis
     """
     rows: List[Dict[str, Any]] = []
     for grp_label, c_filter in GROUPS:
@@ -218,8 +218,8 @@ def build_table4_descriptives(df_calc: pd.DataFrame) -> pd.DataFrame:
 
 def build_table3_correlations(df_calc: pd.DataFrame) -> pd.DataFrame:
     """
-    Build Table 3 Pearson Correlation Matrices across 4 groups (POOLED, DE, UK, US).
-    Schema: group,variable,REPORT,ATT,RESP,KNOW,COMM,NORM,AWARE,TOOL
+    Xây dựng Bảng 3 Ma trận tương quan Pearson trên 4 nhóm (POOLED, DE, UK, US).
+    Lược đồ cột: group,variable,REPORT,ATT,RESP,KNOW,COMM,NORM,AWARE,TOOL
     """
     rows: List[Dict[str, Any]] = []
     for grp_label, c_filter in GROUPS:
@@ -236,7 +236,7 @@ def build_table3_correlations(df_calc: pd.DataFrame) -> pd.DataFrame:
 
 def compute_cronbach_alpha(df_items: pd.DataFrame) -> float:
     """
-    Compute Cronbach's Alpha internal consistency reliability.
+    Tính hệ số tin cậy nhất quán nội tại Cronbach's Alpha.
     alpha = (k / (k - 1)) * (1 - sum(var_i) / var_total)
     """
     k = df_items.shape[1]
@@ -252,9 +252,9 @@ def compute_cronbach_alpha(df_items: pd.DataFrame) -> float:
 
 def compute_exact_srmr(model: Model) -> float:
     """
-    Compute exact Standardized Root Mean Square Residual (SRMR) from
-    model-implied covariance matrix (model.calc_sigma()) and
-    sample covariance matrix (model.mx_cov).
+    Tính chính xác chỉ số Standardized Root Mean Square Residual (SRMR) từ
+    ma trận hiệp phương sai hàm ý của mô hình (model.calc_sigma()) và
+    ma trận hiệp phương sai mẫu (model.mx_cov).
     """
     sigma, _ = model.calc_sigma()
     s = model.mx_cov
@@ -275,20 +275,20 @@ def estimate_cfa_and_reliability(
     df: pd.DataFrame, logger: logging.Logger
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Fit CFA measurement model using semopy with MLW estimator on the pooled sample.
-    Extract standardized factor loadings, delta-method marker SEs and p-values,
-    Cronbach's alpha, Composite Reliability (CR), Average Variance Extracted (AVE),
-    and exact SRMR.
+    Ước lượng mô hình đo lường CFA bằng semopy với bộ ước lượng MLW trên mẫu gộp.
+    Trích xuất hệ số tải nhân tố chuẩn hóa, sai số chuẩn và giá trị p theo phương pháp delta
+    cho biến chỉ báo mốc, Cronbach's alpha, độ tin cậy tổng hợp (CR), phương sai trích
+    trung bình (AVE) và chỉ số SRMR chính xác.
 
-    Returns:
-      df_cfa_measurement: 24 indicator rows with factor loadings and reliabilities
-      df_cfa_fit_indices: Model fit indices across Pooled and country subsamples
+    Trả về:
+      df_cfa_measurement: 24 dòng biến chỉ báo kèm hệ số tải và các chỉ số độ tin cậy
+      df_cfa_fit_indices: Các chỉ số độ phù hợp mô hình trên mẫu gộp và từng mẫu quốc gia
     """
     logger.info("Fitting CFA measurement model on pooled dataset (N=%d)...", len(df))
     model = Model(CFA_SPECIFICATION)
     model.fit(df)
 
-    # 1. Fit Indices
+    # 1. Các chỉ số độ phù hợp mô hình (Fit Indices)
     stats_df = calc_stats(model)
     chi2_val = float(stats_df.loc["Value", "chi2"])
     df_val = int(stats_df.loc["Value", "DoF"])
@@ -311,7 +311,7 @@ def estimate_cfa_and_reliability(
         srmr_val,
     )
 
-    # 2. Inspect estimates and precompute delta-method standard errors for marker variables
+    # 2. Trích xuất ước lượng và tính trước sai số chuẩn theo phương pháp delta cho biến chỉ báo mốc
     insp = model.inspect(std_est=True)
 
     marker_se_dict: Dict[str, Tuple[float, float, float]] = {}
@@ -329,13 +329,13 @@ def estimate_cfa_and_reliability(
         ].iloc[0]
         std_l = float(marker_row["Est. Std"])
 
-        # Delta method for standardized loading: se = se_psi / (2 * sqrt(psi) * sd_item)
+        # Phương pháp Delta cho hệ số tải chuẩn hóa: se = se_psi / (2 * sqrt(psi) * sd_item)
         se_marker = psi_se / (2.0 * np.sqrt(psi) * item_sd)
         z_marker = std_l / se_marker
         p_marker = 2.0 * (1.0 - norm.cdf(abs(z_marker)))
         marker_se_dict[marker_item] = (float(se_marker), float(z_marker), float(p_marker))
 
-    # 3. Construct-level reliability and validity metrics
+    # 3. Các chỉ số độ tin cậy và giá trị hội tụ ở cấp độ khái niệm
     construct_metrics: Dict[str, Dict[str, float]] = {}
     for c in CANONICAL_CONSTRUCTS:
         items = [f"{c}{i}" for i in range(1, 5)]
@@ -370,7 +370,7 @@ def estimate_cfa_and_reliability(
             sqrt_ave,
         )
 
-    # 4. Assemble Table 2 rows (24 indicators)
+    # 4. Tổng hợp các dòng của Bảng 2 (24 biến chỉ báo)
     measurement_rows: List[Dict[str, Any]] = []
     for c in CANONICAL_CONSTRUCTS:
         for i in range(1, 5):
@@ -412,7 +412,7 @@ def estimate_cfa_and_reliability(
 
     df_cfa_measurement = pd.DataFrame(measurement_rows)
 
-    # 5. Fit Indices across Pooled and Country subsamples for table2_cfa_fit_indices.csv
+    # 5. Chỉ số độ phù hợp mô hình trên mẫu gộp và từng mẫu quốc gia cho table2_cfa_fit_indices.csv
     fit_rows: List[Dict[str, Any]] = []
     fit_rows.append({
         "group": "POOLED",
@@ -461,10 +461,10 @@ def run_self_checks(
     df_t4: pd.DataFrame,
     logger: logging.Logger,
 ) -> bool:
-    """Execute thorough runtime assertions to ensure full contract compliance."""
+    """Thực thi các kiểm tra tự động sau khi chạy để đảm bảo tuân thủ đầy đủ đặc tả đầu ra."""
     logger.info("Running post-execution self-verification checks...")
 
-    # Table 1 checks
+    # Kiểm tra Bảng 1
     for idx, r in df_t1.iterrows():
         p_n = float(r["pooled_n"])
         de_n = float(r["germany_n"])
@@ -474,7 +474,7 @@ def run_self_checks(
             raise AssertionError(f"Table 1 row {idx} count sum violation: {de_n}+{uk_n}+{us_n} != {p_n}")
     logger.info("  [PASS] Table 1 country counts sum to pooled counts for all rows.")
 
-    # Table 2 checks
+    # Kiểm tra Bảng 2
     assert len(df_t2) == 24, f"Table 2 must have 24 indicator rows, got {len(df_t2)}"
     for idx, r in df_t2.iterrows():
         std_l = float(r["std_loading"])
@@ -491,7 +491,7 @@ def run_self_checks(
         assert ave >= 0.40, f"AVE < 0.40 for {c}: {ave}"
     logger.info("  [PASS] Table 2 factor loadings, p-values, Alpha, CR, and AVE meet all thresholds.")
 
-    # Table 3 checks
+    # Kiểm tra Bảng 3
     assert len(df_t3) == 32, f"Table 3 must have 32 rows, got {len(df_t3)}"
     for g in ["POOLED", "DE", "UK", "US"]:
         sub_t3 = df_t3[df_t3["group"] == g].set_index("variable")
@@ -503,13 +503,13 @@ def run_self_checks(
                 r21 = float(sub_t3.loc[v2, v])
                 assert abs(r12 - r21) < 1e-3, f"Asymmetry between {v} and {v2} in {g}"
                 assert -1.0 <= r12 <= 1.0, f"Correlation {r12} out of bounds"
-        # Positive semi-definiteness check
+        # Kiểm tra tính xác định dương của ma trận tương quan
         mat = sub_t3[VARIABLES_ORDER].values.astype(float)
         min_eig = np.min(np.linalg.eigvals(mat))
         assert min_eig > 0.0, f"Correlation matrix in {g} not positive definite: min_eig={min_eig}"
     logger.info("  [PASS] Table 3 correlations symmetric, bounded, diagonal 1.0, and positive definite.")
 
-    # Table 4 checks
+    # Kiểm tra Bảng 4
     assert len(df_t4) == 32, f"Table 4 must have 32 rows, got {len(df_t4)}"
     for idx, r in df_t4.iterrows():
         sd = float(r["sd"])
@@ -525,7 +525,7 @@ def run_self_checks(
             assert 1.0 <= m <= 5.0, f"Likert mean out of bounds: {m}"
     logger.info("  [PASS] Table 4 descriptives valid, means within range, SDs positive, skew/kurtosis finite.")
 
-    # Fornell-Larcker discriminant validity test
+    # Kiểm định giá trị phân biệt theo tiêu chuẩn Fornell-Larcker
     sqrt_aves = {
         c: float(df_t2[df_t2["construct"] == c].iloc[0]["sqrt_ave"])
         for c in CANONICAL_CONSTRUCTS
@@ -583,7 +583,7 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    # Resolve paths
+    # Xác định các đường dẫn thư mục và tệp tin
     repo_root = args.repo_root or Path(__file__).resolve().parent.parent
     data_path = args.data_path or (repo_root / "data" / "synthetic_multigroup.csv")
     tables_dir = args.tables_dir or (repo_root / "results" / "tables")
@@ -605,7 +605,7 @@ def main() -> int:
     logger.info("=" * 80)
 
     try:
-        # Load and validate input dataset
+        # Đọc và kiểm tra tập dữ liệu đầu vào
         if not data_path.exists():
             raise FileNotFoundError(f"Input dataset not found at {data_path}")
 
@@ -614,7 +614,7 @@ def main() -> int:
         country_counts = df["country"].value_counts().to_dict()
         logger.info("Country subsample counts: %s", country_counts)
 
-        # 1. Table 1 Demographics
+        # 1. Bảng 1: Thống kê mẫu và nhân khẩu học
         logger.info("Generating Table 1 Demographics and Country Summary...")
         df_t1_canon, df_t1_summary = build_table1_demographics(df)
 
@@ -626,11 +626,11 @@ def main() -> int:
         df_t1_summary.to_csv(path_t1_summary, index=False, encoding="utf-8")
         logger.info("Wrote Table 1 Country Summary: %s (%d rows)", path_t1_summary, len(df_t1_summary))
 
-        # 2. Compute composite scores for construct descriptives & correlations
+        # 2. Tính điểm trung bình tổ hợp phục vụ thống kê mô tả và ma trận tương quan
         logger.info("Computing composite scale scores for latent constructs...")
         df_calc = compute_composite_scores(df)
 
-        # 3. Table 4 Descriptives
+        # 3. Bảng 4: Thống kê mô tả
         logger.info("Generating Table 4 Descriptive Statistics...")
         df_t4 = build_table4_descriptives(df_calc)
 
@@ -638,7 +638,7 @@ def main() -> int:
         df_t4.to_csv(path_t4, index=False, encoding="utf-8")
         logger.info("Wrote Table 4 Descriptives: %s (%d rows)", path_t4, len(df_t4))
 
-        # 4. Table 3 Correlations
+        # 4. Bảng 3: Ma trận tương quan
         logger.info("Generating Table 3 Pearson Correlation Matrices...")
         df_t3 = build_table3_correlations(df_calc)
 
@@ -646,7 +646,7 @@ def main() -> int:
         df_t3.to_csv(path_t3, index=False, encoding="utf-8")
         logger.info("Wrote Table 3 Correlations: %s (%d rows)", path_t3, len(df_t3))
 
-        # 5. Table 2 CFA Measurement Model and Fit Indices
+        # 5. Bảng 2: Mô hình đo lường CFA và chỉ số độ phù hợp
         logger.info("Estimating CFA Measurement Model via semopy (MLW)...")
         df_t2, df_t2_fit = estimate_cfa_and_reliability(df, logger)
 
@@ -658,7 +658,7 @@ def main() -> int:
         df_t2_fit.to_csv(path_t2_fit, index=False, encoding="utf-8")
         logger.info("Wrote Table 2 CFA Fit Indices: %s (%d rows)", path_t2_fit, len(df_t2_fit))
 
-        # 6. Run post-execution self-checks
+        # 6. Chạy kiểm tra tự động hậu thực thi
         run_self_checks(df, df_t1_canon, df_t2, df_t3, df_t4, logger)
 
         logger.info("=" * 80)

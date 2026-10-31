@@ -1,22 +1,22 @@
 """
 05_verify_all.py
 
-Automated End-to-End Verification & Forensic Quality Gate for the DT092 Multigroup SEM
-& Measurement Invariance Replication (Petrič & Just, 2025).
+Cổng Kiểm toán & Xác minh Tự động Toàn tuyến (End-to-End Verification Gate) cho thực nghiệm
+SEM Đa nhóm & Tính bất biến Đo lường của dự án DT092 (Petrič & Just, 2025).
 
-Independently validates:
-1. Clean standalone workspace structure (zero legacy folders or duplicate alias files;
-   `data/Survey_Question.md` reference preserved).
-2. Complete file inventory: synthetic multigroup dataset, manifest, sample allocation,
-   all 18 canonical CSV tables (Tables 1 through 9 + `paper_comparison.csv`), logs, and Markdown reports.
-3. Data rigor: N = 1,017 (DE=306, UK=205, US=506), unique SYN0001..SYN1017 IDs,
-   zero missing values, strict Likert [1, 5] & binary {0, 1} bounds, manifest SHA-256 match.
-4. Statistical output integrity: `math.isfinite` check (no NaN/Inf) across all numeric fields,
-   strict probability bounds `0.0 <= p_value <= 1.0` across all p-value columns,
-   non-averaged p-values in multi-seed runs, strictly increasing Measurement Invariance df & chi2,
-   and model convergence confirmation in execution logs.
+Kiểm định độc lập các hạng mục:
+1. Cấu trúc thư mục dự án sạch sẽ (không còn thư mục cũ hay tệp CSV nhân bản trùng lặp;
+   bảo toàn tệp tham chiếu câu hỏi khảo sát Tiếng Việt `data/Survey_Question.md`).
+2. Kiểm kê đầy đủ danh mục đầu ra: bộ dữ liệu tổng hợp đa nhóm, manifest, bảng phân bổ mẫu,
+   đúng 18 bảng CSV chuẩn (Bảng 1 đến Bảng 9 + `paper_comparison.csv`), tệp log và 3 báo cáo Markdown.
+3. Độ chặt chẽ của dữ liệu: N = 1.017 (DE=306, UK=205, US=506), mã ID duy nhất SYN0001..SYN1017,
+   0 giá trị khuyết, miền giá trị Likert [1, 5] & nhị phân {0, 1}, khớp mã băm SHA-256 với manifest.
+4. Tính toàn vẹn thống kê: kiểm tra `math.isfinite` (không có NaN/Inf) trên mọi trường số,
+   ràng buộc xác suất `0.0 <= p_value <= 1.0` trên mọi cột p-value, không lấy trung bình cộng
+   p-value qua nhiều seed, bậc tự do df & Chi-square của Bảng 7 tăng đơn điệu chặt,
+   và xác nhận hội tụ sạch trong toàn bộ nhật ký chạy mô hình.
 
-Exits with `sys.exit(0)` on 100% pass, or `sys.exit(1)` if any check fails.
+Thoát với mã `sys.exit(0)` khi đạt 100%, hoặc `sys.exit(1)` nếu bất kỳ kiểm định nào thất bại.
 """
 
 from __future__ import annotations
@@ -44,6 +44,7 @@ TABLES_DIR = RESULTS_DIR / "tables"
 LOGS_DIR = RESULTS_DIR / "logs"
 REPORTS_DIR = REPO_ROOT / "reports"
 
+# Danh sách các đường dẫn của phiên bản cũ không được phép tồn tại trong dự án mới
 FORBIDDEN_LEGACY_PATHS = [
     "artifacts",
     "config",
@@ -56,6 +57,7 @@ FORBIDDEN_LEGACY_PATHS = [
     "tests/multigroup",
 ]
 
+# Danh sách đúng 18 bảng CSV chuẩn duy nhất phải có trong results/tables/
 REQUIRED_CANONICAL_TABLES = [
     "table1_demographics.csv",
     "table1_country_summary.csv",
@@ -90,6 +92,7 @@ REQUIRED_LOGS = [
     "04_hypothesis_and_robustness.log",
 ]
 
+# Tập tên cột chứa giá trị xác suất p-value cần kiểm tra miền [0, 1]
 P_VALUE_COLS = {
     "p",
     "p_val",
@@ -113,6 +116,7 @@ P_VALUE_COLS = {
 
 
 def compute_sha256(path: Path) -> str:
+    """Tính mã băm SHA-256 của tệp để đối chiếu tính toàn vẹn."""
     h = hashlib.sha256()
     with open(path, "rb") as f:
         for chunk in iter(lambda: f.read(1 << 20), b""):
@@ -121,6 +125,7 @@ def compute_sha256(path: Path) -> str:
 
 
 def setup_logger() -> logging.Logger:
+    """Khởi tạo bộ ghi nhật ký cho bước kiểm toán 05_verify_all.py."""
     LOGS_DIR.mkdir(parents=True, exist_ok=True)
     logger = logging.getLogger("verify_all")
     logger.setLevel(logging.INFO)
@@ -136,6 +141,7 @@ def setup_logger() -> logging.Logger:
 
 
 def run_all_verifications(logger: logging.Logger) -> Tuple[bool, List[Dict[str, Any]]]:
+    """Thực thi tuần tự toàn bộ 17 hạng mục kiểm toán độc lập và xuất verification_report.json."""
     results: List[Dict[str, Any]] = []
 
     def record(name: str, passed: bool, detail: str) -> None:
@@ -143,7 +149,7 @@ def run_all_verifications(logger: logging.Logger) -> Tuple[bool, List[Dict[str, 
         logger.info("[%s] %s — %s", status, name, detail)
         results.append({"check": name, "passed": bool(passed), "detail": detail})
 
-    # 1. Clean workspace layout (no leftover legacy folders/files)
+    # 1. Kiểm tra cấu trúc thư mục sạch (không còn sót thư mục/tệp của phiên bản cũ)
     leftover_legacy = [rel for rel in FORBIDDEN_LEGACY_PATHS if (REPO_ROOT / rel).exists()]
     record(
         "clean_workspace_no_legacy_artifacts",
@@ -158,7 +164,7 @@ def run_all_verifications(logger: logging.Logger) -> Tuple[bool, List[Dict[str, 
         str(survey_q.relative_to(REPO_ROOT)),
     )
 
-    # 2. Synthetic multigroup dataset & manifest verification
+    # 2. Xác minh bộ dữ liệu tổng hợp đa nhóm và tệp siêu dữ liệu manifest
     mg_csv = DATA_DIR / "synthetic_multigroup.csv"
     mg_manifest = DATA_DIR / "data_manifest.json"
     mg_alloc = DATA_DIR / "sample_allocation.csv"
@@ -207,7 +213,7 @@ def run_all_verifications(logger: logging.Logger) -> Tuple[bool, List[Dict[str, 
         )
         record("multigroup_zero_missing_and_valid_domains", missing_cells == 0 and likert_ok and tool_ok, f"missing={missing_cells}, likert_ok={likert_ok}, tool_ok={tool_ok}")
 
-    # 3. Verify exact 18 canonical CSV tables exist and zero duplicate alias CSVs exist
+    # 3. Xác minh có đúng 18 bảng CSV chuẩn và không có bất kỳ tệp CSV nhân bản nào
     missing_tables = []
     for tbl_name in REQUIRED_CANONICAL_TABLES:
         tp = TABLES_DIR / tbl_name
@@ -221,7 +227,7 @@ def run_all_verifications(logger: logging.Logger) -> Tuple[bool, List[Dict[str, 
         f"found={len(actual_csvs)}/18, missing={missing_tables}, extra_duplicates={extra_csvs}",
     )
 
-    # 4. Numeric finiteness (no NaN/Inf) and strict p-value [0, 1] bounds across ALL CSV tables
+    # 4. Kiểm tra tính hữu hạn số học (không có NaN/Inf) và miền giá trị p-value [0, 1] trên mọi bảng CSV
     non_finite_errors = []
     invalid_p_errors = []
     averaged_p_columns = []
@@ -276,7 +282,7 @@ def run_all_verifications(logger: logging.Logger) -> Tuple[bool, List[Dict[str, 
         f"averaged_p_cols={averaged_p_columns}",
     )
 
-    # 5. Check Measurement Invariance hierarchy (Table 7) mathematical monotonicity
+    # 5. Kiểm tra tính đơn điệu toán học của bậc tự do df và Chi-square trong Bảng 7 (Bất biến đo lường)
     t7_path = TABLES_DIR / "table7_measurement_invariance.csv"
     if t7_path.exists():
         with open(t7_path, "r", encoding="utf-8") as f:
@@ -291,7 +297,7 @@ def run_all_verifications(logger: logging.Logger) -> Tuple[bool, List[Dict[str, 
             f"dfs={dfs}, chi2={[round(c, 2) for c in chi2s]}",
         )
 
-    # 6. Verify Reports and Execution Logs
+    # 6. Xác minh đầy đủ 3 báo cáo Markdown và 4 tệp nhật ký chạy mô hình hội tụ không lỗi
     missing_reports = [r for r in REQUIRED_REPORTS if not (REPORTS_DIR / r).exists() or (REPORTS_DIR / r).stat().st_size < 500]
     record("all_3_markdown_reports_present", len(missing_reports) == 0, f"missing={missing_reports}")
 
@@ -324,6 +330,7 @@ def run_all_verifications(logger: logging.Logger) -> Tuple[bool, List[Dict[str, 
 
 
 def main() -> None:
+    """Điểm vào thực thi cổng kiểm toán tự động và trả về mã thoát tương ứng."""
     logger = setup_logger()
     logger.info("================================================================================")
     logger.info("START: Automated End-to-End Verification (05_verify_all.py)")

@@ -1,17 +1,17 @@
 """
 ================================================================================
-FILE: scripts/01_generate_multigroup_data.py
-PURPOSE:
-  - Generate reproducible synthetic multigroup survey dataset (N=1,017) across
-    Germany (DE, n=306), United Kingdom (UK, n=205), and United States (US, n=506)
-    operationalizing the Information Security Culture Behavior (ISCB) model
-    from Petrič & Just (2025).
-  - Enforce metric invariance via group-invariant factor loadings while encoding
-    country-specific structural path coefficients (Table 6).
-  - Explicitly model and recode reverse-scored indicators (KNOW3, AWARE3, NORM3,
-    ATT2, ATT3) to maintain positive factor alignment.
-  - Generate comprehensive data manifest (data/data_manifest.json)
-    and non-misrepresentation declaration (data/DATASET_DECLARATION.md).
+TỆP: scripts/01_generate_multigroup_data.py
+MỤC ĐÍCH:
+  - Sinh bộ dữ liệu khảo sát tổng hợp đa nhóm có tính tái lập (N=1.017) trên 3 quốc gia:
+    Đức (DE, n=306), Vương quốc Anh (UK, n=205) và Hoa Kỳ (US, n=506), vận hành hóa
+    mô hình Văn hóa & Hành vi An toàn Thông tin (ISCB) từ Petrič & Just (2025).
+  - Thiết lập tính bất biến hệ số tải (metric invariance) qua các hệ số tải nhân tố
+    bất biến giữa các nhóm, đồng thời mã hóa các hệ số đường dẫn cấu trúc đặc thù
+    theo từng quốc gia (Table 6).
+  - Mô phỏng tường minh và mã hóa đảo chiều các chỉ báo phát biểu ngược (KNOW3, AWARE3,
+    NORM3, ATT2, ATT3) nhằm đảm bảo cùng chiều dương với nhân tố tiềm ẩn.
+  - Xuất tệp siêu dữ liệu kiểm chứng (data/data_manifest.json) và tuyên bố minh bạch
+    nguồn gốc dữ liệu mô phỏng (data/DATASET_DECLARATION.md).
 ================================================================================
 """
 
@@ -27,13 +27,13 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-# UTF-8 console output for Windows
+# Cấu hình mã hóa đầu ra UTF-8 cho màn hình console trên Windows
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
-# Core Constants
+# Các hằng số cấu hình cốt lõi
 DEFAULT_SEED = 20261029
 TOTAL_N = 1017
 
@@ -52,7 +52,7 @@ CANONICAL_COLUMNS: List[str] = [
 
 REVERSE_CODED_ITEMS = {"KNOW3", "AWARE3", "NORM3", "ATT2", "ATT3"}
 
-# Exogenous correlation matrix (Table 5 calibration, strictly positive definite)
+# Ma trận tương quan giữa 4 nhân tố ngoại sinh (hiệu chỉnh theo Table 5, xác định dương chặt)
 SIGMA_EXO = np.array([
     [1.00, 0.30, 0.25, 0.20],
     [0.30, 1.00, 0.35, 0.25],
@@ -60,7 +60,7 @@ SIGMA_EXO = np.array([
     [0.20, 0.25, 0.30, 1.00],
 ], dtype=float)
 
-# Invariant factor loadings across groups (Table 2 & Table 3 benchmarks)
+# Hệ số tải nhân tố bất biến giữa các nhóm (tham chiếu chuẩn Table 2 & Table 3)
 INVARIANT_LOADINGS = {
     "NORM": [0.76, 0.76, 0.74, 0.78],
     "AWARE": [0.76, 0.78, 0.74, 0.78],
@@ -70,7 +70,7 @@ INVARIANT_LOADINGS = {
     "RESP": [0.80, 0.80, 0.78, 0.80],
 }
 
-# Empirical latent mean shifts calibrated to Table 4 benchmarks
+# Độ dịch trung bình tiềm ẩn thực nghiệm được hiệu chỉnh khớp với thống kê mô tả Table 4
 CONSTRUCT_SHIFTS = {
     "NORM": 0.25,
     "AWARE": 0.45,
@@ -80,18 +80,18 @@ CONSTRUCT_SHIFTS = {
     "RESP": 0.55,
 }
 
-# Ordinal discretization thresholds
+# Các ngưỡng rời rạc hóa sang thang đo thứ bậc Likert 5 mức
 TAU_STANDARD = np.array([-1.25, -0.45, 0.35, 1.15], dtype=float)
 TAU_REPORT = np.array([-1.80, -0.90, 0.00, 0.80], dtype=float)
 
 
 def get_repo_root() -> Path:
-    """Resolve repository root from scripts/ location."""
+    """Xác định thư mục gốc của dự án từ vị trí thư mục scripts/."""
     return Path(__file__).resolve().parents[1]
 
 
 def compute_sha256(file_path: Path) -> str:
-    """Compute SHA-256 hash in chunked 1MB blocks."""
+    """Tính mã băm kiểm toàn vẹn SHA-256 theo từng khối dữ liệu 1MB."""
     hasher = hashlib.sha256()
     with open(file_path, "rb") as f:
         for chunk in iter(lambda: f.read(1 << 20), b""):
@@ -100,7 +100,7 @@ def compute_sha256(file_path: Path) -> str:
 
 
 def setup_logger(log_file: Optional[Path] = None, verbose: bool = False) -> logging.Logger:
-    """Set up dual-channel logger (file + console)."""
+    """Thiết lập bộ ghi nhật ký kênh đôi (ghi ra tệp log và hiển thị trên console)."""
     logger = logging.getLogger("generate_multigroup")
     logger.setLevel(logging.DEBUG)
     logger.handlers.clear()
@@ -132,9 +132,9 @@ def generate_group_data(
     params: Dict[str, Any],
 ) -> pd.DataFrame:
     """
-    Generate synthetic survey data for a single country subsample.
+    Sinh dữ liệu khảo sát mô phỏng cho một nhóm mẫu quốc gia đơn lẻ.
     """
-    # 1. Exogenous culture latents ~ MVN(0, SIGMA_EXO)
+    # 1. Rút mẫu 4 nhân tố văn hóa ngoại sinh theo phân phối chuẩn nhiều chiều MVN(0, SIGMA_EXO)
     exo_draws = rng.multivariate_normal(np.zeros(4), SIGMA_EXO, size=n)
     latents: Dict[str, np.ndarray] = {
         "NORM": exo_draws[:, 0],
@@ -143,7 +143,7 @@ def generate_group_data(
         "COMM": exo_draws[:, 3],
     }
 
-    # 2. Intermediate endogenous latents (ATT, RESP) with Table 6 weights
+    # 2. Tính các nhân tố nội sinh trung gian (ATT, RESP) theo trọng số cấu trúc ở Table 6
     for endo, wkey in [("ATT", "att_weights"), ("RESP", "resp_weights")]:
         weights = params[wkey]
         signal = sum(w * latents[k] for k, w in weights.items())
@@ -153,13 +153,13 @@ def generate_group_data(
         std_val = y_star.std() or 1.0
         latents[endo] = (y_star - y_star.mean()) / std_val
 
-    # 3. Binary TOOL and mean-centered interaction term
+    # 3. Sinh biến nhị phân TOOL và biến tương tác đã chuẩn hóa tâm (mean-centered)
     tool = rng.binomial(1, params["p_tool"], size=n)
     tool_c = tool - tool.mean()
     comm_c = latents["COMM"] - latents["COMM"].mean()
     comm_tool = comm_c * tool_c
 
-    # 4. Terminal outcome REPORT with Table 6 weights
+    # 4. Tính biến kết quả hành vi cuối cùng REPORT theo trọng số cấu trúc ở Table 6
     rep_w = params["rep_weights"]
     rep_sig = (
         rep_w["ATT"] * latents["ATT"]
@@ -175,7 +175,7 @@ def generate_group_data(
     std_rep = rep_star.std() or 1.0
     latents["REPORT"] = (rep_star - rep_star.mean()) / std_rep
 
-    # 5. Continuous indicator realization & Likert discretization
+    # 5. Sinh giá trị chỉ báo liên tục và rời rạc hóa sang thang đo Likert 1-5
     df_group = pd.DataFrame()
     df_group["country"] = [country] * n
 
@@ -188,14 +188,14 @@ def generate_group_data(
             noise_std = np.sqrt(max(0.01, 1.0 - lam ** 2))
             is_rev = col_name in REVERSE_CODED_ITEMS
 
-            # Negative latent loading for reverse-worded items
+            # Đảo dấu hệ số tải tiềm ẩn đối với các câu hỏi phát biểu ngược
             sign = -1.0 if is_rev else 1.0
             cont_val = sign * lam * (eta + c_shift) + rng.normal(0.0, noise_std, size=n)
 
-            # Discretize into 1-5 integer scale
+            # Rời rạc hóa thành điểm số nguyên từ 1 đến 5
             raw_likert = np.clip(np.digitize(cont_val, TAU_STANDARD) + 1, 1, 5).astype(int)
 
-            # Inversion recoding for reverse items
+            # Mã hóa đảo ngược lại (6 - X) cho các câu hỏi phát biểu ngược để đồng nhất chiều đo
             if is_rev:
                 recoded_likert = (6 - raw_likert).astype(int)
             else:
@@ -205,7 +205,7 @@ def generate_group_data(
 
     df_group["TOOL"] = tool.astype(int)
 
-    # Discretize REPORT (shift +0.35 with TAU_REPORT matches published Table 4 M=3.82, SD=1.26)
+    # Rời rạc hóa biến REPORT (độ dịch +0.35 với ngưỡng TAU_REPORT khớp M=3.82, SD=1.26 ở Table 4)
     report_cont = latents["REPORT"] + 0.35 + rng.normal(0.0, 0.45, size=n)
     df_group["REPORT"] = np.clip(np.digitize(report_cont, TAU_REPORT) + 1, 1, 5).astype(int)
 
@@ -214,13 +214,13 @@ def generate_group_data(
 
 def generate_multigroup_dataset(seed: int = DEFAULT_SEED) -> pd.DataFrame:
     """
-    Generate the complete 3-group synthetic dataset (N=1,017).
+    Sinh trọn bộ dữ liệu tổng hợp đa nhóm gồm 3 quốc gia (N=1.017).
     """
-    # Use SeedSequence.spawn(3) for independent, deterministic country streams
+    # Sử dụng SeedSequence.spawn(3) để tách 3 luồng số ngẫu nhiên độc lập nhưng hoàn toàn tất định
     ss = np.random.SeedSequence(seed)
     child_seeds = ss.spawn(3)
 
-    # Group specifications based on Petrič & Just (2025) Table 1 & Table 6
+    # Đặc tả tham số từng nhóm quốc gia dựa trên Table 1 & Table 6 của Petrič & Just (2025)
     group_specs = [
         ("DE", 306, child_seeds[0], {
             "p_tool": 0.70,
@@ -259,10 +259,10 @@ def generate_multigroup_dataset(seed: int = DEFAULT_SEED) -> pd.DataFrame:
 
     full_df = pd.concat(dfs, ignore_index=True)
 
-    # Monotonic unique respondent IDs SYN0001 through SYN1017
+    # Cấp mã định danh duy nhất tăng dần từ SYN0001 đến SYN1017
     full_df.insert(0, "respondent_id", [f"SYN{i:04d}" for i in range(1, len(full_df) + 1)])
 
-    # Enforce exact canonical column ordering
+    # Cố định đúng thứ tự 28 cột chuẩn của lược đồ dữ liệu
     full_df = full_df[CANONICAL_COLUMNS]
 
     return full_df
@@ -270,18 +270,18 @@ def generate_multigroup_dataset(seed: int = DEFAULT_SEED) -> pd.DataFrame:
 
 def verify_dataset(df: pd.DataFrame, repo_root: Path) -> Dict[str, Any]:
     """
-    Run 10-point technical integrity verification gate.
+    Thực thi cổng kiểm định chất lượng kỹ thuật gồm 8 nhóm tiêu chí toàn vẹn dữ liệu.
     """
     checks: Dict[str, Any] = {}
 
-    # 1. Total row count == 1017
+    # 1. Tổng số dòng quan sát đúng bằng 1.017
     checks["N_exact_1017"] = {
         "passed": bool(len(df) == TOTAL_N),
         "observed": int(len(df)),
         "expected": TOTAL_N,
     }
 
-    # 2. Country allocations: DE=306, UK=205, US=506
+    # 2. Phân bổ cỡ mẫu từng quốc gia khớp chính xác: DE=306, UK=205, US=506
     counts = df["country"].value_counts().to_dict()
     checks["country_DE_exact_306"] = {
         "passed": bool(counts.get("DE", 0) == 306),
@@ -299,7 +299,7 @@ def verify_dataset(df: pd.DataFrame, repo_root: Path) -> Dict[str, Any]:
         "expected": 506,
     }
 
-    # 3. 100% Unique respondent IDs matching pattern
+    # 3. 100% mã định danh người trả lời là duy nhất, không trùng lặp
     id_unique = bool(df["respondent_id"].is_unique) and (df["respondent_id"].nunique() == TOTAL_N)
     checks["unique_IDs_100pct"] = {
         "passed": id_unique,
@@ -307,7 +307,7 @@ def verify_dataset(df: pd.DataFrame, repo_root: Path) -> Dict[str, Any]:
         "expected": TOTAL_N,
     }
 
-    # 4. Zero missing cells
+    # 4. Không có bất kỳ ô dữ liệu trống/khuyết (missing) nào
     missing = int(df.isna().sum().sum())
     checks["zero_missing_cells"] = {
         "passed": bool(missing == 0),
@@ -315,7 +315,7 @@ def verify_dataset(df: pd.DataFrame, repo_root: Path) -> Dict[str, Any]:
         "expected": 0,
     }
 
-    # 5. Likert indicators strictly in [1, 5]
+    # 5. Toàn bộ 25 biến thang đo Likert nằm chặt trong miền số nguyên [1, 5]
     likert_cols = [c for c in df.columns if c not in ["respondent_id", "country", "TOOL"]]
     likert_valid = all(df[c].between(1, 5).all() for c in likert_cols) and (len(likert_cols) == 25)
     checks["likert_items_range_1_to_5"] = {
@@ -323,21 +323,21 @@ def verify_dataset(df: pd.DataFrame, repo_root: Path) -> Dict[str, Any]:
         "columns_checked": len(likert_cols),
     }
 
-    # 6. TOOL variable strictly binary {0, 1}
+    # 6. Biến công cụ báo cáo TOOL chỉ nhận giá trị nhị phân {0, 1}
     tool_unique = sorted(df["TOOL"].unique().tolist())
     checks["tool_variable_binary_0_1"] = {
         "passed": bool(set(tool_unique).issubset({0, 1})),
         "unique_values": tool_unique,
     }
 
-    # 7. Required 28 columns present in exact canonical order
+    # 7. Đầy đủ đúng 28 cột theo thứ tự chuẩn hóa
     cols_match = bool(list(df.columns) == CANONICAL_COLUMNS)
     checks["required_columns_28"] = {
         "passed": cols_match,
         "columns_count": len(df.columns),
     }
 
-    # 8. Duplicate feature row check
+    # 8. Kiểm tra không có các dòng quan sát trùng hệt nhau trên tập biến đặc trưng
     feat_cols = [c for c in df.columns if c not in ["respondent_id", "country"]]
     dup_features = int(df.duplicated(subset=feat_cols).sum())
     checks["no_duplicate_feature_rows"] = {
@@ -363,12 +363,12 @@ def compile_data_manifest(
     verification: Dict[str, Any],
 ) -> Dict[str, Any]:
     """
-    Compile rich manifest JSON conforming to Explorer M1-3 schema and test assertions.
+    Tổng hợp tệp siêu dữ liệu JSON (manifest) lưu vết seed, lược đồ cột, mã băm SHA-256 và kiểm định.
     """
     output_hash = compute_sha256(output_path)
     file_size = output_path.stat().st_size
 
-    # Column distributions
+    # Thống kê phân phối và miền giá trị của từng cột dữ liệu
     col_schema: Dict[str, Any] = {}
     for col in df.columns:
         if col == "respondent_id":
@@ -430,7 +430,7 @@ def compile_data_manifest(
     )
 
     manifest: Dict[str, Any] = {
-        # Top-level direct keys for compatibility with test assertions
+        # Các khóa cấp cao nhất giúp tra cứu nhanh và tương thích với bộ kiểm thử tự động
         "seed": seed,
         "random_seed": seed,
         "total_rows": len(df),
@@ -500,7 +500,7 @@ def compile_data_manifest(
 
 def write_dataset_declaration(output_dir: Path) -> Path:
     """
-    Write companion human-readable markdown notice in dataset directory.
+    Xuất tệp Markdown tuyên bố minh bạch đạo đức và nguồn gốc dữ liệu mô phỏng trong thư mục data/.
     """
     declaration_path = output_dir / "DATASET_DECLARATION.md"
     content = """# DATASET DECLARATION: ETHICAL DISCLOSURE & SYNTHETIC DATA NOTICE
@@ -533,6 +533,7 @@ This dataset comprises **entirely synthetic, computer-simulated records** genera
 
 
 def main() -> int:
+    """Hàm chính đọc tham số dòng lệnh, sinh dữ liệu đa nhóm, kiểm định và xuất manifest."""
     parser = argparse.ArgumentParser(
         description="Generate synthetic multigroup survey dataset for Germany, UK, and USA."
     )
@@ -596,18 +597,18 @@ def main() -> int:
     logger.info("=" * 80)
 
     try:
-        # Generate dataset
+        # Sinh bộ dữ liệu tổng hợp đa nhóm
         logger.info(f"Simulating synthetic multigroup data (N={TOTAL_N}) with seed {args.seed}...")
         df = generate_multigroup_dataset(seed=args.seed)
 
-        # Ensure output directory exists
+        # Đảm bảo thư mục đích tồn tại trước khi ghi tệp
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Write dataset to CSV
+        # Xuất bộ dữ liệu ra định dạng CSV chuẩn UTF-8
         df.to_csv(output_path, index=False, encoding="utf-8")
         logger.info(f"Wrote dataset to CSV: {output_path} ({len(df)} rows, {len(df.columns)} columns)")
 
-        # Run technical verification gate
+        # Chạy cổng kiểm định kỹ thuật trên dữ liệu vừa sinh
         logger.info("Running technical verification checks on generated dataset...")
         verification = verify_dataset(df, repo_root)
         if not verification["all_checks_passed"]:
@@ -618,14 +619,14 @@ def main() -> int:
             return 1
         logger.info("[PASS] All 9 technical verification checks passed successfully.")
 
-        # Compile and write manifest
+        # Tổng hợp và ghi tệp siêu dữ liệu data_manifest.json
         manifest = compile_data_manifest(df, args.seed, output_path, repo_root, verification)
         manifest_path.parent.mkdir(parents=True, exist_ok=True)
         with open(manifest_path, "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=2, ensure_ascii=False)
         logger.info(f"Wrote data manifest JSON: {manifest_path}")
 
-        # Write companion declaration
+        # Xuất tệp tuyên bố minh bạch nguồn gốc dữ liệu đi kèm
         decl_path = write_dataset_declaration(output_path.parent)
         logger.info(f"Wrote companion disclosure notice: {decl_path}")
 

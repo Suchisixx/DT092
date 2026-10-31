@@ -1,27 +1,27 @@
-[2026-10-30 18:09:07] [INFO] ================================================================================
-[2026-10-30 18:09:07] [INFO] START: Milestone M4 — Hypothesis Testing, Robustness & Paper Comparison
-[2026-10-30 18:09:07] [INFO] Dataset: D:\Download\DT092_Phishing_Culture\data\synthetic_multigroup.csv
-[2026-10-30 18:09:07] [INFO] ================================================================================
-[2026-10-30 18:09:07] [INFO] --- EXPORTING SAMPLE ALLOCATION & SECTION-9 CANONICAL TABLES ---
-[2026-10-30 18:09:07] [INFO] [SAVED] Sample Allocation -> D:\Download\DT092_Phishing_Culture\data\sample_allocation.csv
-[2026-10-30 18:09:08] [INFO] [SAVED] Multigroup SEM Fit & R2 -> D:\Download\DT092_Phishing_Culture\results\tables\table6_multigroup_fit.csv
-[2026-10-30 18:09:08] [INFO] --- EVALUATING TABLE 8: HYPOTHESIS TESTING ACROSS POOLED & 3 COUNTRIES ---
-[2026-10-30 18:09:08] [INFO] [SAVED] Table 8 Hypothesis Testing -> D:\Download\DT092_Phishing_Culture\results\tables\table8_hypothesis_testing.csv
-[2026-10-30 18:09:08] [INFO] --- EVALUATING TABLE 9: OLS-HC3 & MULTI-SEED ROBUSTNESS ---
-[2026-10-30 18:09:08] [INFO] --- RUNNING 5-SEED MULTI-RUN LATENT SEM STABILITY ([20261029, 20261030, 20261031, 20261101, 20261102]) ---
-[2026-10-30 18:09:09] [INFO] Completed multi-seed SEM estimation for seed=20261029 (POOLED, DE, UK, US)
-[2026-10-30 18:09:09] [INFO] Completed multi-seed SEM estimation for seed=20261030 (POOLED, DE, UK, US)
-[2026-10-30 18:09:10] [INFO] Completed multi-seed SEM estimation for seed=20261031 (POOLED, DE, UK, US)
-[2026-10-30 18:09:10] [INFO] Completed multi-seed SEM estimation for seed=20261101 (POOLED, DE, UK, US)
-[2026-10-30 18:09:10] [INFO] Completed multi-seed SEM estimation for seed=20261102 (POOLED, DE, UK, US)
-[2026-10-30 18:09:10] [INFO] [SAVED] Individual Multi-Seed Raw Runs (300 rows, unaveraged p-values) -> D:\Download\DT092_Phishing_Culture\results\tables\table9_multiseed_raw_runs.csv
-[2026-10-30 18:09:11] [INFO] [SAVED] Table 9 Robustness Summary -> D:\Download\DT092_Phishing_Culture\results\tables\table9_robustness_hc3.csv
-[2026-10-30 18:09:11] [INFO] --- BUILDING DIRECT PAPER COMPARISON TABLE (SECTIONS 6 & 7) ---
-[2026-10-30 18:09:11] [INFO] [SAVED] Direct Paper Comparison -> D:\Download\DT092_Phishing_Culture\results\tables\paper_comparison.csv
-[2026-10-30 18:09:11] [INFO] --- GENERATING COMPREHENSIVE MARKDOWN REPORTS ---
-[2026-10-30 18:09:11] [INFO] [SAVED] Report -> D:\Download\DT092_Phishing_Culture\reports\results_summary.md
-[2026-10-30 18:09:11] [INFO] [SAVED] Report -> D:\Download\DT092_Phishing_Culture\reports\limitations.md
-[2026-10-30 18:09:11] [INFO] [PASS] Milestone M4 post-execution assertions succeeded.
-[2026-10-30 18:09:11] [INFO] ================================================================================
-[2026-10-30 18:09:11] [INFO] COMPLETED: Milestone M4 Successfully Finished.
-[2026-10-30 18:09:11] [INFO] ================================================================================
+[2026-10-30 19:09:21] [INFO] ================================================================================
+[2026-10-30 19:09:21] [INFO] START: Milestone M4 — Hypothesis Testing, Robustness & Paper Comparison
+[2026-10-30 19:09:21] [INFO] Dataset: D:\Download\DT092_Phishing_Culture\data\synthetic_multigroup.csv
+[2026-10-30 19:09:21] [INFO] ================================================================================
+[2026-10-30 19:09:21] [INFO] --- EXPORTING SAMPLE ALLOCATION & SECTION-9 CANONICAL TABLES ---
+[2026-10-30 19:09:21] [INFO] [SAVED] Sample Allocation -> D:\Download\DT092_Phishing_Culture\data\sample_allocation.csv
+[2026-10-30 19:09:21] [INFO] [SAVED] Multigroup SEM Fit & R2 -> D:\Download\DT092_Phishing_Culture\results\tables\table6_multigroup_fit.csv
+[2026-10-30 19:09:21] [INFO] --- EVALUATING TABLE 8: HYPOTHESIS TESTING ACROSS POOLED & 3 COUNTRIES ---
+[2026-10-30 19:09:21] [INFO] [SAVED] Table 8 Hypothesis Testing -> D:\Download\DT092_Phishing_Culture\results\tables\table8_hypothesis_testing.csv
+[2026-10-30 19:09:21] [INFO] --- EVALUATING TABLE 9: OLS-HC3 & MULTI-SEED ROBUSTNESS ---
+[2026-10-30 19:09:21] [INFO] --- RUNNING 5-SEED MULTI-RUN LATENT SEM STABILITY ([20261029, 20261030, 20261031, 20261101, 20261102]) ---
+[2026-10-30 19:09:22] [INFO] Completed multi-seed SEM estimation for seed=20261029 (POOLED, DE, UK, US)
+[2026-10-30 19:09:22] [INFO] Completed multi-seed SEM estimation for seed=20261030 (POOLED, DE, UK, US)
+[2026-10-30 19:09:23] [INFO] Completed multi-seed SEM estimation for seed=20261031 (POOLED, DE, UK, US)
+[2026-10-30 19:09:23] [INFO] Completed multi-seed SEM estimation for seed=20261101 (POOLED, DE, UK, US)
+[2026-10-30 19:09:23] [INFO] Completed multi-seed SEM estimation for seed=20261102 (POOLED, DE, UK, US)
+[2026-10-30 19:09:23] [INFO] [SAVED] Individual Multi-Seed Raw Runs (300 rows, unaveraged p-values) -> D:\Download\DT092_Phishing_Culture\results\tables\table9_multiseed_raw_runs.csv
+[2026-10-30 19:09:23] [INFO] [SAVED] Table 9 Robustness Summary -> D:\Download\DT092_Phishing_Culture\results\tables\table9_robustness_hc3.csv
+[2026-10-30 19:09:23] [INFO] --- BUILDING DIRECT PAPER COMPARISON TABLE (SECTIONS 6 & 7) ---
+[2026-10-30 19:09:23] [INFO] [SAVED] Direct Paper Comparison -> D:\Download\DT092_Phishing_Culture\results\tables\paper_comparison.csv
+[2026-10-30 19:09:23] [INFO] --- GENERATING COMPREHENSIVE MARKDOWN REPORTS ---
+[2026-10-30 19:09:23] [INFO] [SAVED] Report -> D:\Download\DT092_Phishing_Culture\reports\results_summary.md
+[2026-10-30 19:09:23] [INFO] [SAVED] Report -> D:\Download\DT092_Phishing_Culture\reports\limitations.md
+[2026-10-30 19:09:23] [INFO] [PASS] Milestone M4 post-execution assertions succeeded.
+[2026-10-30 19:09:23] [INFO] ================================================================================
+[2026-10-30 19:09:23] [INFO] COMPLETED: Milestone M4 Successfully Finished.
+[2026-10-30 19:09:23] [INFO] ================================================================================

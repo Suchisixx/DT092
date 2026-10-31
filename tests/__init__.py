@@ -1,1 +1,1 @@
-# tests package initialization
+# Khởi tạo gói kiểm thử (tests package)

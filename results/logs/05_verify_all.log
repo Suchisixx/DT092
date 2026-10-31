@@ -1,23 +1,23 @@
-[2026-10-30 18:09:53] [INFO] ================================================================================
-[2026-10-30 18:09:53] [INFO] START: Automated End-to-End Verification (05_verify_all.py)
-[2026-10-30 18:09:53] [INFO] ================================================================================
-[2026-10-30 18:09:53] [INFO] [PASS] clean_workspace_no_legacy_artifacts — leftover_legacy=[]
-[2026-10-30 18:09:53] [INFO] [PASS] survey_question_reference_preserved — data\Survey_Question.md
-[2026-10-30 18:09:53] [INFO] [PASS] multigroup_dataset_exists — data\synthetic_multigroup.csv
-[2026-10-30 18:09:53] [INFO] [PASS] multigroup_manifest_exists — data\data_manifest.json
-[2026-10-30 18:09:53] [INFO] [PASS] sample_allocation_exists — data\sample_allocation.csv
-[2026-10-30 18:09:53] [INFO] [PASS] dataset_declaration_exists — data\DATASET_DECLARATION.md
-[2026-10-30 18:09:53] [INFO] [PASS] multigroup_dataset_sha256_matches_manifest — SHA-256=52c161dcd96ff568228e74c9c6517f2c2423f4bb2bee0860b511912d4aae5cbe
-[2026-10-30 18:09:53] [INFO] [PASS] multigroup_N_1017_and_unique_IDs — N=1017, unique_IDs=1017
-[2026-10-30 18:09:53] [INFO] [PASS] multigroup_country_allocation_306_205_506 — counts={'DE': 306, 'UK': 205, 'US': 506}
-[2026-10-30 18:09:53] [INFO] [PASS] multigroup_zero_missing_and_valid_domains — missing=0, likert_ok=True, tool_ok=True
-[2026-10-30 18:09:53] [INFO] [PASS] exact_18_canonical_tables_no_duplicates — found=18/18, missing=[], extra_duplicates=[]
-[2026-10-30 18:09:53] [INFO] [PASS] all_csv_estimates_finite_no_nan_or_inf — non_finite_count=0 []
-[2026-10-30 18:09:53] [INFO] [PASS] all_p_values_strictly_in_0_1 — invalid_p_count=0 []
-[2026-10-30 18:09:53] [INFO] [PASS] no_averaged_p_values_in_multiseed_tables — averaged_p_cols=[]
-[2026-10-30 18:09:53] [INFO] [PASS] measurement_invariance_nested_df_and_chi2_monotonic — dfs=[711, 747, 783], chi2=[770.96, 808.22, 851.63]
-[2026-10-30 18:09:53] [INFO] [PASS] all_3_markdown_reports_present — missing=[]
-[2026-10-30 18:09:53] [INFO] [PASS] execution_logs_present_and_converged_cleanly — missing_logs=[], log_errors=[]
-[2026-10-30 18:09:53] [INFO] ================================================================================
-[2026-10-30 18:09:53] [INFO] VERIFICATION SUMMARY: 17 / 17 checks PASSED
-[2026-10-30 18:09:53] [INFO] ================================================================================
+[2026-10-31 22:16:56] [INFO] ================================================================================
+[2026-10-31 22:16:56] [INFO] START: Automated End-to-End Verification (05_verify_all.py)
+[2026-10-31 22:16:56] [INFO] ================================================================================
+[2026-10-31 22:16:56] [INFO] [PASS] clean_workspace_no_legacy_artifacts — leftover_legacy=[]
+[2026-10-31 22:16:56] [INFO] [PASS] survey_question_reference_preserved — data\Survey_Question.md
+[2026-10-31 22:16:56] [INFO] [PASS] multigroup_dataset_exists — data\synthetic_multigroup.csv
+[2026-10-31 22:16:56] [INFO] [PASS] multigroup_manifest_exists — data\data_manifest.json
+[2026-10-31 22:16:56] [INFO] [PASS] sample_allocation_exists — data\sample_allocation.csv
+[2026-10-31 22:16:56] [INFO] [PASS] dataset_declaration_exists — data\DATASET_DECLARATION.md
+[2026-10-31 22:16:56] [INFO] [PASS] multigroup_dataset_sha256_matches_manifest — SHA-256=52c161dcd96ff568228e74c9c6517f2c2423f4bb2bee0860b511912d4aae5cbe
+[2026-10-31 22:16:56] [INFO] [PASS] multigroup_N_1017_and_unique_IDs — N=1017, unique_IDs=1017
+[2026-10-31 22:16:56] [INFO] [PASS] multigroup_country_allocation_306_205_506 — counts={'DE': 306, 'UK': 205, 'US': 506}
+[2026-10-31 22:16:56] [INFO] [PASS] multigroup_zero_missing_and_valid_domains — missing=0, likert_ok=True, tool_ok=True
+[2026-10-31 22:16:56] [INFO] [PASS] exact_18_canonical_tables_no_duplicates — found=18/18, missing=[], extra_duplicates=[]
+[2026-10-31 22:16:56] [INFO] [PASS] all_csv_estimates_finite_no_nan_or_inf — non_finite_count=0 []
+[2026-10-31 22:16:56] [INFO] [PASS] all_p_values_strictly_in_0_1 — invalid_p_count=0 []
+[2026-10-31 22:16:56] [INFO] [PASS] no_averaged_p_values_in_multiseed_tables — averaged_p_cols=[]
+[2026-10-31 22:16:56] [INFO] [PASS] measurement_invariance_nested_df_and_chi2_monotonic — dfs=[711, 747, 783], chi2=[770.96, 808.22, 851.63]
+[2026-10-31 22:16:56] [INFO] [PASS] all_3_markdown_reports_present — missing=[]
+[2026-10-31 22:16:56] [INFO] [PASS] execution_logs_present_and_converged_cleanly — missing_logs=[], log_errors=[]
+[2026-10-31 22:16:56] [INFO] ================================================================================
+[2026-10-31 22:16:56] [INFO] VERIFICATION SUMMARY: 17 / 17 checks PASSED
+[2026-10-31 22:16:56] [INFO] ================================================================================

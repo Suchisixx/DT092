@@ -1,8 +1,8 @@
 """
-Standalone Test Runner for DT092 Multigroup SEM Opaque-Box E2E Testing Track.
-Runs Tiers 1 through 4, aggregates results, and displays formatted status reports.
+Trình chạy kiểm thử độc lập cho bộ kiểm thử hộp đen đầu-cuối (Opaque-Box E2E) dự án DT092 Multigroup SEM.
+Thực thi từ Tầng 1 đến Tầng 4, tổng hợp kết quả và hiển thị báo cáo trạng thái định dạng chuẩn.
 
-Usage:
+Cách sử dụng:
     python tests/run_e2e_tests.py
     python tests/run_e2e_tests.py --tier 1
     python tests/run_e2e_tests.py --verbose
@@ -15,7 +15,7 @@ import unittest
 import argparse
 from pathlib import Path
 
-# Ensure stdout and stderr handle utf-8 safely on Windows
+# Đảm bảo stdout và stderr xử lý mã hóa UTF-8 an toàn trên Windows
 if sys.platform == "win32":
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -23,7 +23,7 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-# Ensure project root is in sys.path
+# Đảm bảo thư mục gốc của dự án nằm trong sys.path
 TESTS_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = TESTS_DIR.parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -110,7 +110,7 @@ def main():
         for test, trace in result.errors:
             all_errors.append((title, str(test), trace))
 
-    # Print Summary Table
+    # In bảng tóm tắt kết quả kiểm thử
     print("\n" + "=" * 80)
     print(" E2E TEST EXECUTION SUMMARY")
     print("=" * 80)

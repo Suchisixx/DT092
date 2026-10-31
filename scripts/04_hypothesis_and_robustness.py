@@ -1,15 +1,15 @@
 """
 04_hypothesis_and_robustness.py
 
-Hypothesis Testing (Table 8), Multi-Seed & OLS-HC3 Robustness (Table 9),
-Direct Paper Comparison (Petrič & Just, 2025), Multigroup SEM Fit (Table 6 Fit),
-and Comprehensive Markdown Reports (reports/results_summary.md, reports/limitations.md).
+Kiểm định giả thuyết (Bảng 8), Kiểm định độ vững đa hạt giống & OLS-HC3 (Bảng 9),
+Đối chiếu trực tiếp với bài báo gốc (Petrič & Just, 2025), Độ phù hợp SEM đa nhóm (Bảng 6 Fit),
+và Xuất báo cáo tổng hợp Markdown (reports/results_summary.md, reports/limitations.md).
 
-Strict Academic & Computational Integrity Guarantees:
-- Zero hardcoded or fabricated simulation estimates; all statistics are dynamically
-  computed from `data/synthetic_multigroup.csv` and live model fits.
-- Multi-seed replication executes 5 independent deterministic seeds (20261029..20261102),
-  saves every individual run to `results/tables/table9_multiseed_raw_runs.csv`, and NEVER averages p-values.
+Cam kết tính toàn vẹn học thuật & tính toán:
+- Không gán cứng hoặc bịa đặt bất kỳ ước lượng mô phỏng nào; toàn bộ thống kê đều được tính động
+  trực tiếp từ `data/synthetic_multigroup.csv` và kết quả ước lượng mô hình thực tế.
+- Thí nghiệm lặp đa hạt giống (multi-seed) thực thi 5 hạt giống tất định độc lập (20261029..20261102),
+  lưu từng lần chạy riêng biệt vào `results/tables/table9_multiseed_raw_runs.csv`, và TUYỆT ĐỐI KHÔNG lấy trung bình cộng giá trị p.
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ import statsmodels.api as sm
 from semopy import Model, calc_stats
 
 # -----------------------------------------------------------------------------
-# PATH CONFIGURATION
+# CẤU HÌNH ĐƯỜNG DẪN
 # -----------------------------------------------------------------------------
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
@@ -50,9 +50,9 @@ LOG_FILE = LOGS_DIR / "04_hypothesis_and_robustness.log"
 
 CONSTRUCTS = ["NORM", "AWARE", "KNOW", "COMM", "ATT", "RESP"]
 
-# 15 Hypothesized Structural Paths in Petrič & Just (2025)
-# Note: All 15 substantive hypotheses in Petrič & Just (2025) posit positive (+) effects
-# (including H3a COMM->ATT and H3b COMM->RESP, which empirically exhibited paradoxical negative effects).
+# 15 đường dẫn cấu trúc theo giả thuyết trong nghiên cứu của Petrič & Just (2025)
+# Lưu ý: Toàn bộ 15 giả thuyết nội dung trong Petrič & Just (2025) đều kỳ vọng tác động dương (+)
+# (bao gồm cả H3a COMM->ATT và H3b COMM->RESP, vốn thực nghiệm cho thấy tác động âm mang tính nghịch lý).
 HYPOTHESIS_SPECS: List[Dict[str, Any]] = [
     {
         "hypothesis": "H1a",
@@ -288,7 +288,7 @@ def setup_logger() -> logging.Logger:
 
 
 def load_generator_module():
-    """Dynamically imports 01_generate_multigroup_data.py for multi-seed SEM stability runs."""
+    """Nạp động mô-đun 01_generate_multigroup_data.py để chạy kiểm tra độ ổn định SEM đa hạt giống (multi-seed)."""
     gen_path = SCRIPT_DIR / "01_generate_multigroup_data.py"
     spec = importlib.util.spec_from_file_location("gen_multigroup", gen_path)
     mod = importlib.util.module_from_spec(spec)
@@ -311,14 +311,14 @@ def compute_exact_srmr(model: Model) -> float:
 
 
 # -----------------------------------------------------------------------------
-# 1. SAMPLE ALLOCATION & SECTION-9 CANONICAL ALIASES
+# 1. PHÂN BỔ MẪU & ĐỘ PHÙ HỢP MÔ HÌNH SEM ĐA NHÓM
 # -----------------------------------------------------------------------------
 def export_sample_allocation_and_section9_aliases(
     df: pd.DataFrame, logger: logging.Logger
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Exports `artifacts/multigroup/data/sample_allocation.csv` and canonical
-    Section-9 table aliases derived directly from verified M2/M3 outputs.
+    Xuất tệp `data/sample_allocation.csv` và bảng chỉ số độ phù hợp mô hình SEM đa nhóm
+    được trích xuất trực tiếp từ tập dữ liệu và mô hình đã kiểm chứng.
     """
     logger.info("--- EXPORTING SAMPLE ALLOCATION & SECTION-9 CANONICAL TABLES ---")
     paper_alloc = {
@@ -359,7 +359,7 @@ def export_sample_allocation_and_section9_aliases(
     df_alloc.to_csv(SAMPLE_ALLOC_FILE, index=False, encoding="utf-8")
     logger.info("[SAVED] Sample Allocation -> %s", SAMPLE_ALLOC_FILE)
 
-    # Compute exact country-level and configural multigroup SEM fit & R^2 for table6_multigroup_fit.csv
+    # Tính chính xác độ phù hợp mô hình SEM và hệ số R^2 theo từng quốc gia và mô hình đa nhóm không ràng buộc cho table6_multigroup_fit.csv
     mg_fit_rows = []
     sum_chi2 = 0.0
     sum_df = 0
@@ -373,7 +373,7 @@ def export_sample_allocation_and_section9_aliases(
         srmr_val = compute_exact_srmr(m)
         est_std = m.inspect(std_est=True)
 
-        # R^2 = 1 - standardized residual variance for endogenous variables
+        # R^2 = 1 - phương sai phần dư chuẩn hóa của các biến nội sinh
         r2_map = {}
         for endo in ["ATT", "RESP", "REPORT"]:
             vrow = est_std[(est_std["op"] == "~~") & (est_std["lval"] == endo) & (est_std["rval"] == endo)]
@@ -428,10 +428,10 @@ def export_sample_allocation_and_section9_aliases(
 
 
 # -----------------------------------------------------------------------------
-# 2. TABLE 8: FORMAL HYPOTHESIS TESTING BY COUNTRY
+# 2. BẢNG 8: KIỂM ĐỊNH GIẢ THUYẾT CHÍNH THỨC THEO TỪNG QUỐC GIA
 # -----------------------------------------------------------------------------
 def classify_single_group_hypothesis(beta: float, p_val: float, hyp_sign: str = "+") -> str:
-    """Formal statistical rule: Supported iff sign matches hypothesized direction AND p < 0.05."""
+    """Quy tắc thống kê chính thức: Được ủng hộ (Supported) khi và chỉ khi dấu ước lượng khớp chiều giả thuyết VÀ p < 0.05."""
     expected_pos = hyp_sign.strip() != "-"
     sign_matches = (beta > 0.0) if expected_pos else (beta < 0.0)
     if p_val < 0.05:
@@ -541,10 +541,10 @@ def build_table8_hypotheses(logger: logging.Logger) -> pd.DataFrame:
 
 
 # -----------------------------------------------------------------------------
-# 3. TABLE 9: ROBUSTNESS (OLS-HC3 + 5-SEED MULTI-RUN SEM + BASELINE COMPARISON)
+# 3. BẢNG 9: KIỂM ĐỊNH ĐỘ VỮNG (OLS-HC3 + SEM 5 HẠT GIỐNG + SO SÁNH CƠ SỞ)
 # -----------------------------------------------------------------------------
 def run_ols_hc3_on_sample(df_sample: pd.DataFrame, group_name: str) -> Dict[str, Dict[str, float]]:
-    """Fits composite-score OLS with MacKinnon-White HC3 robust SEs on the 3 structural equations."""
+    """Ước lượng mô hình OLS trên điểm trung bình tổ hợp với sai số chuẩn vững MacKinnon-White HC3 cho 3 phương trình cấu trúc."""
     work = df_sample.copy()
     for c in CONSTRUCTS:
         work[c] = work[[f"{c}{i}" for i in range(1, 5)]].mean(axis=1)
@@ -589,8 +589,8 @@ def run_ols_hc3_on_sample(df_sample: pd.DataFrame, group_name: str) -> Dict[str,
 
 def run_multiseed_latent_sem(logger: logging.Logger) -> pd.DataFrame:
     """
-    Runs 5 independent deterministic seeds across Pooled, DE, UK, and US (20 full latent SEM fits).
-    Records every single individual run without averaging p-values.
+    Chạy 5 hạt giống tất định độc lập trên mẫu gộp (Pooled), DE, UK và US (tổng cộng 20 mô hình SEM biến tiềm ẩn).
+    Lưu lại từng lần chạy riêng biệt mà không lấy trung bình cộng giá trị p.
     """
     logger.info("--- RUNNING 5-SEED MULTI-RUN LATENT SEM STABILITY (%s) ---", MULTISEED_LIST)
     gen_mod = load_generator_module()
@@ -650,7 +650,7 @@ def build_table9_robustness(df: pd.DataFrame, logger: logging.Logger) -> pd.Data
     logger.info("--- EVALUATING TABLE 9: OLS-HC3 & MULTI-SEED ROBUSTNESS ---")
     t5 = pd.read_csv(TABLES_DIR / "table5_pooled_sem.csv").set_index("path_label")
 
-    # Run OLS-HC3 on Pooled and each country
+    # Chạy hồi quy OLS-HC3 trên mẫu gộp và từng quốc gia
     hc3_pooled = run_ols_hc3_on_sample(df, "POOLED")
     country_hc3_rows = []
     for code in ["DE", "UK", "US"]:
@@ -668,7 +668,7 @@ def build_table9_robustness(df: pd.DataFrame, logger: logging.Logger) -> pd.Data
         TABLES_DIR / "table9_country_ols_hc3.csv", index=False, encoding="utf-8"
     )
 
-    # Run 5-seed latent SEM
+    # Chạy mô hình SEM biến tiềm ẩn trên 5 hạt giống ngẫu nhiên (5-seed)
     df_raw_seeds = run_multiseed_latent_sem(logger)
     pooled_seeds = df_raw_seeds[df_raw_seeds["group"] == "POOLED"]
 
@@ -695,7 +695,7 @@ def build_table9_robustness(df: pd.DataFrame, logger: logging.Logger) -> pd.Data
         ms_min = float(s_sub["std_beta"].min())
         ms_max = float(s_sub["std_beta"].max())
 
-        # Report order statistics (min, median, max) of p-values and significance count k/5 — NEVER average p-values!
+        # Báo cáo thống kê thứ tự (min, median, max) của p-value và tần suất có ý nghĩa thống kê k/5 — TUYỆT ĐỐI KHÔNG lấy trung bình cộng p-value!
         ms_min_p = float(s_sub["p_value"].min())
         ms_med_p = float(s_sub["p_value"].median())
         ms_max_p = float(s_sub["p_value"].max())
@@ -753,7 +753,7 @@ def build_table9_robustness(df: pd.DataFrame, logger: logging.Logger) -> pd.Data
 
 
 # -----------------------------------------------------------------------------
-# 4. PAPER COMPARISON TABLE (SECTIONS 6 & 7)
+# 4. BẢNG ĐỐI CHIẾU TRỰC TIẾP VỚI BÀI BÁO GỐC
 # -----------------------------------------------------------------------------
 def proximity_tier(abs_diff: float) -> str:
     if abs_diff <= 0.05:
@@ -764,7 +764,7 @@ def proximity_tier(abs_diff: float) -> str:
 
 
 def relative_diff_str(sim_val: float, paper_val: float) -> str:
-    # Per Section 7 Rule 3: report relative error only when paper benchmark is meaningfully non-zero
+    # Chỉ báo cáo sai số tương đối khi hệ số chuẩn trong bài báo gốc khác 0 đáng kể (|paper| >= 0.05)
     if abs(paper_val) < 0.05:
         return "N/A (|paper|<0.05)"
     rel = 100.0 * abs(sim_val - paper_val) / abs(paper_val)
@@ -852,7 +852,7 @@ def build_paper_comparison(logger: logging.Logger) -> pd.DataFrame:
 
 
 # -----------------------------------------------------------------------------
-# 5. MARKDOWN REPORTS (results_summary.md & limitations.md)
+# 5. XUẤT BÁO CÁO TỔNG HỢP MARKDOWN (results_summary.md & limitations.md)
 # -----------------------------------------------------------------------------
 def write_markdown_reports(
     df_alloc: pd.DataFrame,
@@ -872,7 +872,7 @@ def write_markdown_reports(
     t6_tests = pd.read_csv(TABLES_DIR / "table6_cross_group_tests.csv")
     t7_inv = pd.read_csv(TABLES_DIR / "table7_measurement_invariance.csv")
 
-    # Summary stats for dynamic narrative
+    # Thống kê tóm tắt phục vụ nội dung tường thuật động trong báo cáo
     n_very_close_pool = int((df_comp["abs_diff_pooled"] <= 0.05).sum())
     n_mod_close_pool = int(((df_comp["abs_diff_pooled"] > 0.05) & (df_comp["abs_diff_pooled"] <= 0.10)).sum())
     n_notable_pool = int((df_comp["abs_diff_pooled"] > 0.10).sum())
@@ -882,7 +882,7 @@ def write_markdown_reports(
     p_fit = t5_fit.iloc[0]
     cfa_p = t2_fit[t2_fit["group"] == "POOLED"].iloc[0]
 
-    # Build construct reliability summary table from Table 2
+    # Xây dựng bảng tóm tắt độ tin cậy thang đo từ Bảng 2
     rel_lines = []
     paper_rel = {
         "NORM": (5, 0.86, 0.55),
@@ -904,7 +904,7 @@ def write_markdown_reports(
             f"{float(r0['ave']):.4f} (Paper: {p_ave:.2f}) | {float(r0['sqrt_ave']):.4f} |"
         )
 
-    # Table 6 + Comparison rows
+    # Các dòng dữ liệu Bảng 6 kết hợp đối chiếu với bài báo gốc
     t6_md_lines = []
     for _, r in df_comp.iterrows():
         h = r["hypothesis"]
@@ -918,7 +918,7 @@ def write_markdown_reports(
             f"{r['mean_country_abs_diff']:.4f} | {float(rt['wald_p_3group']):.4f} ({rt['group_difference_asserted'].split(' ')[0]}) |"
         )
 
-    # Table 7 invariance lines
+    # Các dòng dữ liệu Bảng 7 về tính bất biến đo lường
     t7_md_lines = []
     for _, r in t7_inv.iterrows():
         t7_md_lines.append(
@@ -927,7 +927,7 @@ def write_markdown_reports(
             f"{r['delta_cfi']} | {r['delta_rmsea']} | {r['delta_srmr']} | {r['invariance_decision']} |"
         )
 
-    # Table 8 hypothesis lines
+    # Các dòng dữ liệu Bảng 8 về kết quả kiểm định giả thuyết
     t8_md_lines = []
     for _, r in df_t8.iterrows():
         t8_md_lines.append(
@@ -936,7 +936,7 @@ def write_markdown_reports(
             f"**{r['overall_multigroup_status']}** | {r['paper_overall_status']} |"
         )
 
-    # Table 9 robustness lines
+    # Các dòng dữ liệu Bảng 9 về kiểm định độ vững
     t9_md_lines = []
     for _, r in df_t9.iterrows():
         t9_md_lines.append(
@@ -1117,7 +1117,7 @@ To verify that inferences are robust to non-normality, heteroskedasticity, and r
 
 
 # -----------------------------------------------------------------------------
-# MAIN EXECUTION
+# THỰC THI CHÍNH
 # -----------------------------------------------------------------------------
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run Milestone M4: Hypothesis Testing, Robustness & Paper Comparison.")
@@ -1143,7 +1143,7 @@ def main() -> None:
     df_comp = build_paper_comparison(logger)
     write_markdown_reports(df_alloc, df_mg_fit, df_t8, df_t9, df_comp, logger)
 
-    # Post-execution quality assertions
+    # Kiểm tra chất lượng đầu ra sau khi thực thi
     assert len(df_t8) == 15, "Table 8 must evaluate all 15 hypotheses"
     assert len(df_t9) == 15, "Table 9 must evaluate all 15 structural paths"
     assert len(df_comp) == 15, "Paper comparison table must evaluate all 15 structural paths"

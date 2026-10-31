@@ -1,11 +1,12 @@
 """
 00_run_pipeline.py
 
-Master deterministic end-to-end orchestrator for the DT092 Multigroup SEM &
-Measurement Invariance experiment (Germany N=306, UK N=205, USA N=506; Total N=1,017)
-modeled after Petrič & Just (2025).
+Trình điều phối chạy trọn gói từ đầu đến cuối có tính tất định (deterministic) cho thực nghiệm
+SEM Đa nhóm & Kiểm định Tính bất biến Đo lường của dự án DT092 (Germany N=306, UK N=205,
+USA N=506; Tổng N=1.017) theo cấu trúc nghiên cứu của Petrič & Just (2025).
 
-Executes all 5 stages sequentially from scratch and verifies numerical reproducibility.
+Thực thi tuần tự toàn bộ 5 giai đoạn từ bước sinh dữ liệu đến bước kiểm toán độc lập
+và xác nhận khả năng tái lập chính xác tuyệt đối về mặt số học.
 """
 
 from __future__ import annotations
@@ -35,6 +36,7 @@ PIPELINE_STEPS = [
 
 
 def main() -> None:
+    """Thiết lập môi trường Python (.venv) và kích hoạt tuần tự 5 giai đoạn của pipeline."""
     env = os.environ.copy()
     existing_pp = env.get("PYTHONPATH", "")
     if VENV_SITE.exists():
