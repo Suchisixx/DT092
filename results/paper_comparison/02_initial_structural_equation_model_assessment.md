@@ -4,10 +4,13 @@
 ---
 
 ## 1. Mục đích của Mô hình SEM Ban đầu (Pooled Baseline SEM)
-Trước khi tiến hành phân tích đa nhóm (Multigroup) theo từng quốc gia, một mô hình phương trình cấu trúc (SEM) tổng thể trên mẫu gộp (**$N = 1.017$**) được ước lượng nhằm:
+Trước khi tiến hành phân tích đa nhóm (Multigroup) theo từng quốc gia, một mô hình phương trình cấu trúc (SEM) tổng thể trên tập dữ liệu tổng hợp mô phỏng (**$N = 1.017$ quan sát giả lập**) được ước lượng nhằm:
 1. Xác định mức độ phù hợp tổng thể (Goodness-of-Fit) của khung lý thuyết ISCB với dữ liệu thực nghiệm.
 2. Đo lường tỷ lệ phương sai giải thích ($R^2$) cho các biến phụ thuộc: Thái độ (`ATT`), Trách nhiệm (`RESP`), và Hành vi báo cáo (`REPORT`).
 3. Đánh giá sơ bộ các trọng số đường dẫn cấu trúc ($\beta$) và kiểm tra biến tương tác $\text{COMM} \times \text{TOOL}$.
+
+> [!NOTE]
+> **Tuyên bố minh bạch dữ liệu:** Dữ liệu sử dụng là dữ liệu mô phỏng bằng máy tính dựa trên các tham số của bài báo *Petrič & Just (2025)*, không phải dữ liệu khảo sát từ người thật.
 
 ---
 
@@ -31,13 +34,18 @@ Trước khi tiến hành phân tích đa nhóm (Multigroup) theo từng quốc 
 ---
 
 ## 3. Khả năng giải thích phương sai ($R^2$) của mô hình
-*(Mỗi ô thể hiện đúng 1 giá trị duy nhất)*
+*(Khớp chính xác với tệp kết quả `table5_pooled_sem.csv` của dự án, mỗi ô ghi đúng 1 giá trị)*
 
-| Biến nội sinh (Phụ thuộc) | Bài báo gốc ($R^2$) | Dự án DT092 ($R^2$) | Chênh lệch ($\Delta R^2$) | Ý nghĩa thực tiễn |
+| Biến nội sinh (Phụ thuộc) | Bài báo gốc ($R^2$) | Dự án DT092 ($R^2$) | Chênh lệch ($\Delta R^2$) | Ý nghĩa thực tiễn & Giải trình phương pháp |
 | :--- | :---: | :---: | :---: | :--- |
-| **ATT** (Thái độ an toàn thông tin) | 61.1% | 64.2% | +3.1% | Các yếu tố văn hóa tổ chức giải thích hơn 60% thái độ của nhân viên. |
-| **RESP** (Ý thức trách nhiệm an toàn) | 65.2% | 67.1% | +1.9% | Các yếu tố văn hóa tổ chức giải thích gần 70% ý thức trách nhiệm. |
-| **REPORT** (Hành vi báo cáo phishing) | 23.5% | 18.7% | -4.8% | Dự báo được khoảng 1/5 biến thiên trong hành vi báo cáo thực tế. |
+| **ATT** (Thái độ an toàn thông tin) | 61.1% | 37.04% | -24.06% | Các yếu tố văn hóa tổ chức giải thích phần lớn thái độ bảo vệ thông tin. |
+| **RESP** (Ý thức trách nhiệm an toàn) | 65.2% | 46.77% | -18.43% | Chuẩn mực và chính sách giải thích gần một nửa ý thức trách nhiệm. |
+| **REPORT** (Hành vi báo cáo phishing) | 23.5% | 14.55% | -8.95% | Giải thích khoảng 15% phương sai trong hành vi báo cáo thực tế. |
+
+> [!NOTE]
+> **Giải trình sự chênh lệch $R^2$:**
+> Trong bài báo gốc, tác giả áp dụng quy trình 2 bước: sau khi làm CFA, tác giả tính điểm trung bình tổng hợp (composite scores) và chạy mô hình đường dẫn (path model) bằng WLSMV, nơi sai số đo lường của từng item bị triệt tiêu khỏi giai đoạn cấu trúc nên $R^2$ đạt mức $61\% - 65\%$. 
+> Ngược lại, dự án DT092 ước lượng mô hình SEM tiềm ẩn đồng thời (full latent structural model) qua semopy, nơi toàn bộ sai số đo lường của 24 biến quan sát Likert được giữ lại trực tiếp trong phương trình cấu trúc. Hiện tượng suy giảm đo lường (attenuation) làm $R^2$ đạt $37.04\%$ cho ATT, $46.77\%$ cho RESP, và $14.55\%$ cho REPORT, phản ánh chính xác phương sai giải thích thực tế ở cấp độ biến tiềm ẩn.
 
 ---
 
@@ -70,7 +78,7 @@ Trước khi tiến hành phân tích đa nhóm (Multigroup) theo từng quốc 
 ---
 
 ## 5. Những điểm rút ra cốt lõi cho tài liệu / báo cáo
-1. **Độ tương đồng cấu trúc xuất sắc:** 14/15 trọng số đường dẫn cấu trúc gộp của dự án khớp với bài báo gốc trong khoảng chênh lệch rất nhỏ $|\Delta \beta| \le 0.05$, độ chênh lệch tuyệt đối trung bình chỉ đạt $0.038$.
-2. **Khung lý thuyết vững chắc:** Mô hình giải thích cực kỳ tốt sự hình thành thái độ và trách nhiệm của nhân viên ($R^2 > 60\%$), với các chuẩn mực tổ chức (`NORM`) và sự nhận biết chính sách (`AWARE`) đóng vai trò động lực chính.
+1. **Độ tương đồng cấu trúc cao:** Theo phân loại trong `paper_comparison.csv`, có **11/15 trọng số đường dẫn cấu trúc gộp** đạt mức rất sát ($|\Delta \beta| \le 0.05$), **4/15 trọng số** đạt mức sát vừa ($0.05 < |\Delta \beta| \le 0.10$), và **không có đường dẫn nào** lệch quá $0.10$. Độ lệch tuyệt đối trung bình trên toàn bộ 15 đường dẫn chỉ là **0.0378**.
+2. **Khung lý thuyết vững chắc:** Chuẩn mực tổ chức (`NORM`, $\beta = 0.403$) và nhận thức chính sách (`AWARE`, $\beta = 0.349$) là hai bệ phóng quan trọng nhất định hình thái độ và trách nhiệm an toàn thông tin của nhân viên.
 3. **Động lực trực tiếp thúc đẩy báo cáo:** Trong mô hình gộp, việc nhân viên có chủ động báo cáo email lừa đảo hay không phụ thuộc trực tiếp vào **Chất lượng truyền thông (`COMM`, $\beta = 0.213^{***}$)** và **Sự hiện diện của công cụ kỹ thuật (`TOOL`, $\beta = 0.182^{***}$)**, thay vì các chuẩn mực chung chung.
 4. **Hiệu ứng tương tác không đáng kể ở mẫu chung:** Cả bài gốc lẫn dự án đều chứng minh biến tương tác $\text{COMM} \times \text{TOOL}$ không có ý nghĩa thống kê ở mẫu gộp chung ($p > 0.05$), nghĩa là công cụ kỹ thuật phát huy tác dụng độc lập mà không bắt buộc phải đi kèm truyền thông dày đặc.
